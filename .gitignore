@@ -1,6 +1,6 @@
-data/images/
-data/baseline/
-data/chunks/
+encoding/data/images/
+encoding/data/baseline/
+encoding/data/chunks/
 __pycache__/
 .ipynb_checkpoints/
 *.pyc
