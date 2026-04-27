@@ -1,0 +1,6 @@
+data/images/
+data/baseline/
+data/chunks/
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
