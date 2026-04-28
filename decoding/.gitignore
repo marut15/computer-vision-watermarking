@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Model checkpoints
+*.pth
+best_model.pth
+
+# Data splits (we'll regenerate on RunPod)
+# splits.json can stay - it's only 24KB
