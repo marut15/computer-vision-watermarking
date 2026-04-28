@@ -59,14 +59,14 @@ def evaluate(model, loader, criterion, device):
     return metrics
 
 def main():
-    # Config - optimized for Mac testing
+    # Config - optimized for GPU training
     config = {
-        'batch_size': 4,  # Small for Mac
-        'num_epochs': 3,  # Just test 3 epochs locally
+        'batch_size': 16,
+        'num_epochs': 30,
         'lr': 1e-4,
         'backbone': 'resnet50',
-        'image_size': 512,  # Smaller for Mac
-        'device': 'mps' if torch.backends.mps.is_available() else 'cpu'
+        'image_size': 1024,  # Full resolution
+        'device': 'cuda' if torch.cuda.is_available() else 'cpu'
     }
     
     print(f"Using device: {config['device']}")
@@ -94,9 +94,9 @@ def main():
     val_dataset = Subset(full_dataset, splits['val'])
     
     train_loader = DataLoader(train_dataset, batch_size=config['batch_size'], 
-                             shuffle=True, num_workers=0)  # 0 for Mac compatibility
+                             shuffle=True, num_workers=4)  # 0 for Mac compatibility
     val_loader = DataLoader(val_dataset, batch_size=config['batch_size'], 
-                           shuffle=False, num_workers=0)
+                           shuffle=False, num_workers=4)
     
     # Model
     model = WatermarkClassifier(backbone=config['backbone']).to(config['device'])
