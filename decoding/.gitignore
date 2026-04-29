@@ -2,10 +2,54 @@
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
 
-# Model checkpoints
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Mac
+.DS_Store
+
+# Model checkpoints (too large for Git)
+checkpoints/*.pth
 *.pth
-best_model.pth
 
-# Data splits (we'll regenerate on RunPod)
-# splits.json can stay - it's only 24KB
+# But keep the directory structure
+!checkpoints/.gitkeep
+
+# Results - exclude generated test results
+results/test_results/*.json
+
+# Figures - exclude generated plots
+figures/*.png
+figures/*.jpg
+figures/*.pdf
+
+# Logs
+*.log
+
+# Data - large files
+data/images/
+data/baseline/
+
+# Keep splits.json (small, important for reproducibility)
+!data/splits.json
+
+# Environment
+venv/
+env/
+.env

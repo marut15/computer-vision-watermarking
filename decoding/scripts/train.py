@@ -1,14 +1,20 @@
 import os
+import sys
 import json
+import yaml
+import argparse
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
 from torchvision import transforms
 from tqdm import tqdm
 
-from dataloader import WatermarkDataset
-from model import WatermarkClassifier
-from utils import compute_metrics, print_metrics
+# Add parent directory to path to import from src
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.dataloader import WatermarkDataset
+from src.models import get_model
+from src.utils import compute_metrics, print_metrics
 
 def train_one_epoch(model, loader, criterion, optimizer, device):
     model.train()
@@ -43,7 +49,6 @@ def evaluate(model, loader, criterion, device):
         loss = criterion(logits, targets)
         total_loss += loss.item()
         
-        # Convert to binary predictions
         probs = torch.sigmoid(logits)
         preds = (probs > 0.5).float()
         
@@ -59,21 +64,29 @@ def evaluate(model, loader, criterion, device):
     return metrics
 
 def main():
-    # Config - optimized for GPU training
-    config = {
-        'batch_size': 16,
-        'num_epochs': 30,
-        'lr': 1e-4,
-        'backbone': 'resnet50',
-        'image_size': 1024,  # Full resolution
-        'device': 'cuda' if torch.cuda.is_available() else 'cpu'
-    }
+    # Parse command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', type=str, required=True, help='Path to config YAML file')
+    args = parser.parse_args()
     
-    print(f"Using device: {config['device']}")
+    # Load config from YAML
+    with open(args.config, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    print(f"\n{'='*60}")
+    print(f"Experiment: {config['experiment']['name']}")
+    print(f"{'='*60}\n")
+    
+    # Set seed for reproducibility
+    torch.manual_seed(config['seed'])
+    
+    # Device
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(f"Using device: {device}\n")
     
     # Transforms
     transform = transforms.Compose([
-        transforms.Resize((config['image_size'], config['image_size'])),
+        transforms.Resize((config['data']['image_size'], config['data']['image_size'])),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                            std=[0.229, 0.224, 0.225])
@@ -81,39 +94,57 @@ def main():
     
     # Load dataset
     full_dataset = WatermarkDataset(
-        metadata_path='../encoding/data/metadata.json',
-        image_dir='../encoding/data/images/',
+        metadata_path=config['data']['metadata_path'],
+        image_dir=config['data']['images_path'],
         transform=transform
     )
     
     # Load splits
-    with open('splits.json', 'r') as f:
+    with open(config['data']['splits_path'], 'r') as f:
         splits = json.load(f)
     
     train_dataset = Subset(full_dataset, splits['train'])
     val_dataset = Subset(full_dataset, splits['val'])
     
-    train_loader = DataLoader(train_dataset, batch_size=config['batch_size'], 
-                             shuffle=True, num_workers=4)  # 0 for Mac compatibility
-    val_loader = DataLoader(val_dataset, batch_size=config['batch_size'], 
-                           shuffle=False, num_workers=4)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=config['training']['batch_size'],
+        shuffle=True,
+        num_workers=4
+    )
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=config['training']['batch_size'],
+        shuffle=False,
+        num_workers=4
+    )
     
-    # Model
-    model = WatermarkClassifier(backbone=config['backbone']).to(config['device'])
+    # Get model using factory function
+    model = get_model(
+        architecture=config['model']['architecture'],
+        num_outputs=8,
+        pretrained=config['model']['pretrained']
+    ).to(device)
+    
+    print(f"Model: {config['model']['architecture']}")
+    print(f"Parameters: {sum(p.numel() for p in model.parameters()) / 1e6:.1f}M\n")
+    
     criterion = nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=config['lr'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=config['training']['learning_rate'])
+    
+    # Create output directory
+    os.makedirs(os.path.dirname(config['output']['checkpoint']), exist_ok=True)
     
     # Training loop
     best_exact_match = 0
     
-    for epoch in range(config['num_epochs']):
+    for epoch in range(config['training']['num_epochs']):
         print(f"\n{'='*60}")
-        print(f"Epoch {epoch+1}/{config['num_epochs']}")
+        print(f"Epoch {epoch+1}/{config['training']['num_epochs']}")
         print(f"{'='*60}")
         
-        train_loss = train_one_epoch(model, train_loader, criterion, 
-                                     optimizer, config['device'])
-        val_metrics = evaluate(model, val_loader, criterion, config['device'])
+        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device)
+        val_metrics = evaluate(model, val_loader, criterion, device)
         
         print(f"\nTrain loss: {train_loss:.4f}")
         print_metrics(val_metrics, prefix='Val ')
@@ -127,13 +158,15 @@ def main():
                 'optimizer_state_dict': optimizer.state_dict(),
                 'config': config,
                 'metrics': val_metrics
-            }, 'best_model.pth')
+            }, config['output']['checkpoint'])
+            
             print(f"\n✓ Saved best model (exact match: {best_exact_match:.4f})")
     
     print(f"\n{'='*60}")
     print(f"Training complete!")
     print(f"Best exact match rate: {best_exact_match:.4f}")
-    print(f"{'='*60}")
+    print(f"Checkpoint saved: {config['output']['checkpoint']}")
+    print(f"{'='*60}\n")
 
 if __name__ == '__main__':
     main()

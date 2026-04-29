@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torchvision import models
 
-class WatermarkClassifier(nn.Module):
+class ResNet50Classifier(nn.Module):
     def __init__(self, backbone='resnet50', pretrained=True):
         super().__init__()
         
