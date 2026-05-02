@@ -38,6 +38,10 @@ results/test_results/*.json
 figures/*.png
 figures/*.jpg
 figures/*.pdf
+results/figures/
+
+# Smoke test fixture and artifacts (synthetic dataset + checkpoints)
+.smoke/
 
 # Logs
 *.log
@@ -53,3 +57,6 @@ data/baseline/
 venv/
 env/
 .env
+
+# Runtime evaluation manifests/logs
+.full_eval/
