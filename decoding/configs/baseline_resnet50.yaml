@@ -13,8 +13,8 @@ training:
 data:
   image_size: 1024
   splits_path: data/splits.json
-  metadata_path: ../encoding/data/metadata.json
-  images_path: ../encoding/data/images/
+  metadata_path: ../watermark_encoding/data/metadata.json
+  images_path: ../watermark_encoding/data/images/
 
 output:
   checkpoint: checkpoints/baseline_resnet50.pth

@@ -5,3 +5,29 @@ __pycache__/
 .ipynb_checkpoints/
 *.pyc
 .DS_Store
+
+# Raw S3 data — lives on disk + S3, never in git
+/watermark_encoding/
+/watermark-decoder-data/
+
+# Local-only worktree / agent tooling artifacts
+.claude/
+
+# Runtime evaluation manifests/logs
+.full_eval/
+decoding/.full_eval/
+
+# Python virtual envs
+venv/
+env/
+.venv/
+
+# Secrets / credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.aws/
+aws-credentials*
+credentials
