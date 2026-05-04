@@ -142,8 +142,8 @@ def visualize_comparison(
                     ax.imshow(img)
                 ax.set_title(label)
                 ax.axis("off")
-        fig.suptitle(f"Prompt {p_idx}: baseline vs slider perturbations")
-        fig.tight_layout()
+        fig.suptitle(f"Prompt {p_idx}: baseline vs slider perturbations", y = 0.995)
+        fig.tight_layout(rect = [0,0,1,0.98])
         out = out_dir / f"comparison_prompt_{p_idx:02d}.png"
         fig.savefig(out, dpi=120)
         plt.close(fig)
