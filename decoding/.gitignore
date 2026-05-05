@@ -38,7 +38,9 @@ results/test_results/*.json
 figures/*.png
 figures/*.jpg
 figures/*.pdf
-results/figures/
+results/figures/*
+!results/figures/bitdiff_prompt_*.png
+!results/figures/bitdiff_prompt_*.json
 
 # Smoke test fixture and artifacts (synthetic dataset + checkpoints)
 .smoke/
