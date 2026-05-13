@@ -1,0 +1,24 @@
+=== robustness_eval ===
+  model=dual_branch  device=cuda  smoke=False
+  loaded dual_branch from dual_branch.pth
+
+running attacks...
+             clean: mean=0.9775  exact=0.8438
+          jpeg_q90: mean=0.6631  exact=0.0703
+          jpeg_q75: mean=0.5894  exact=0.0156
+          jpeg_q50: mean=0.5552  exact=0.0117
+        resize_512: mean=0.9775  exact=0.8438
+    random_crop_75: mean=0.4946  exact=0.0039
+
+attack          b0     b1     b2     b3     b4     b5     b6     b7     mean   exact
+--------------  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
+clean           0.984  0.973  0.992  0.961  0.949  0.984  1.000  0.977  0.978  0.844
+jpeg_q90        0.633  0.641  0.707  0.633  0.609  0.633  0.809  0.641  0.663  0.070
+jpeg_q75        0.570  0.566  0.613  0.559  0.520  0.625  0.664  0.598  0.589  0.016
+jpeg_q50        0.574  0.500  0.570  0.566  0.504  0.559  0.586  0.582  0.555  0.012
+resize_512      0.984  0.973  0.992  0.961  0.949  0.984  1.000  0.977  0.978  0.844
+random_crop_75  0.500  0.438  0.496  0.484  0.512  0.477  0.523  0.527  0.495  0.004
+  wrote /workspace/new_models/dual_branch/figures/robustness_per_bit.png
+  wrote /workspace/new_models/dual_branch/figures/robustness_jpeg_curve.png
+
+results: /workspace/new_models/dual_branch/robustness.json

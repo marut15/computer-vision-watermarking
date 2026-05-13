@@ -1,0 +1,72 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Model weights — all live in /workspace/data, never in git ─────────────────
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+
+# ── Large data directories ────────────────────────────────────────────────────
+watermark_encoding/data/images/
+watermark_encoding/data/baseline/
+watermark_encoding/models/
+encoding/data/images/
+encoding/data/baseline/
+encoding/data/chunks/
+encoding/models/
+decoding/checkpoints/
+model_bundles/
+outputs/
+
+# ── Runtime artifacts ─────────────────────────────────────────────────────────
+.full_eval/
+decoding/.full_eval/
+decoding/.train_new/
+.smoke/
+
+# ── Local config override (data_config.yaml has real paths, example is tracked) ─
+data_config.yaml
+
+# ── Legacy top-level S3 staging dirs (only match at workspace root, not in repo) ─
+/watermark-decoder-data/
+
+# ── Python virtual envs ───────────────────────────────────────────────────────
+venv/
+env/
+.venv/
+
+# ── Secrets / credentials ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.aws/
+aws-credentials*
+credentials
+
+# ── Tooling artifacts ─────────────────────────────────────────────────────────
+.claude/

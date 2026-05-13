@@ -1,0 +1,24 @@
+=== robustness_eval ===
+  model=multiscale_pyramid  device=cuda  smoke=False
+  loaded multiscale_pyramid from multiscale_pyramid.pth
+
+running attacks...
+             clean: mean=0.4829  exact=0.0078
+          jpeg_q90: mean=0.4839  exact=0.0078
+          jpeg_q75: mean=0.4785  exact=0.0078
+          jpeg_q50: mean=0.4854  exact=0.0078
+        resize_512: mean=0.4829  exact=0.0078
+    random_crop_75: mean=0.4756  exact=0.0078
+
+attack          b0     b1     b2     b3     b4     b5     b6     b7     mean   exact
+--------------  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
+clean           0.473  0.477  0.535  0.465  0.426  0.508  0.473  0.508  0.483  0.008
+jpeg_q90        0.477  0.484  0.535  0.461  0.426  0.508  0.473  0.508  0.484  0.008
+jpeg_q75        0.477  0.469  0.535  0.461  0.426  0.508  0.473  0.480  0.479  0.008
+jpeg_q50        0.480  0.469  0.531  0.461  0.461  0.508  0.473  0.500  0.485  0.008
+resize_512      0.473  0.477  0.535  0.465  0.426  0.508  0.473  0.508  0.483  0.008
+random_crop_75  0.492  0.480  0.512  0.484  0.449  0.480  0.477  0.430  0.476  0.008
+  wrote /workspace/new_models/multiscale_pyramid/figures/robustness_per_bit.png
+  wrote /workspace/new_models/multiscale_pyramid/figures/robustness_jpeg_curve.png
+
+results: /workspace/new_models/multiscale_pyramid/robustness.json

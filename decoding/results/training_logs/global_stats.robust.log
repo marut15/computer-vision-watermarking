@@ -1,0 +1,24 @@
+=== robustness_eval ===
+  model=global_stats  device=cuda  smoke=False
+  loaded global_stats from global_stats.pth
+
+running attacks...
+             clean: mean=0.4810  exact=0.0000
+          jpeg_q90: mean=0.4751  exact=0.0039
+          jpeg_q75: mean=0.4722  exact=0.0039
+          jpeg_q50: mean=0.4722  exact=0.0039
+        resize_512: mean=0.4873  exact=0.0000
+    random_crop_75: mean=0.4897  exact=0.0000
+
+attack          b0     b1     b2     b3     b4     b5     b6     b7     mean   exact
+--------------  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
+clean           0.473  0.480  0.500  0.477  0.438  0.492  0.516  0.473  0.481  0.000
+jpeg_q90        0.445  0.480  0.496  0.477  0.438  0.473  0.516  0.477  0.475  0.004
+jpeg_q75        0.445  0.484  0.484  0.477  0.430  0.480  0.516  0.461  0.472  0.004
+jpeg_q50        0.453  0.484  0.480  0.477  0.430  0.473  0.527  0.453  0.472  0.004
+resize_512      0.445  0.500  0.484  0.500  0.461  0.500  0.508  0.500  0.487  0.000
+random_crop_75  0.449  0.500  0.484  0.500  0.461  0.473  0.500  0.551  0.490  0.000
+  wrote /workspace/new_models/global_stats/figures/robustness_per_bit.png
+  wrote /workspace/new_models/global_stats/figures/robustness_jpeg_curve.png
+
+results: /workspace/new_models/global_stats/robustness.json

@@ -1,0 +1,15 @@
+{
+  "k0_1024": 380.0,
+  "k0_256_eq": 95.0,
+  "gain": 0.3,
+  "delta_linf": 0.018857935443520546,
+  "delta_l2_rms": 0.0035138598177582026,
+  "top_decile_energy_frac_pixel": 0.4402505159378052,
+  "energy_frac_central_128_full": 1.4261036085372325e-07,
+  "energy_frac_central_64_full": 3.6434722426592625e-12,
+  "uniform_baseline_central_128": 0.0625,
+  "spec_diff_linf": 0.27782583236694336,
+  "spec_diff_rms": 0.03770305961370468,
+  "spec_diff_energy_frac_central_64": 0.031903285533189774,
+  "spec_diff_energy_frac_central_32": 0.0023254957050085068
+}

@@ -1,0 +1,45 @@
+experiment:
+  name: dual_branch_r50
+
+# DualBranch with ResNet-50 (instead of ResNet-18) for the spatial branch.
+# Rationale: ablation showed the spectral branch already carries 96% of the
+# accuracy on its own - the spatial branch's marginal contribution is
+# concentrated on bits 3, 4 (bright/dark, contrast). Swapping in a larger
+# spatial trunk targets exactly those bits.
+model:
+  architecture: dual_branch_r50
+  pretrained: true
+
+# Tuned for the efficient trainer (train_dual_branch_efficient.py):
+#   - bf16 AMP (Blackwell), no GradScaler needed
+#   - cosine LR with linear warm-up (5%)
+#   - on-the-fly JPEG augmentation (random q in [60, 95])
+#   - early stopping on val_exact_match (patience 8)
+#
+# 1024 input + R-50 spatial trunk + bf16 fits comfortably on the Blackwell
+# (95 GiB) at batch=8. The original baseline_resnet50 was also trained at
+# 1024 so this run is apples-to-apples against it on clean accuracy. LR is
+# scaled down ~3x from the 512x batch=24 setting to match the smaller
+# effective batch.
+training:
+  batch_size: 8
+  num_epochs: 40
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  warmup_pct: 0.05
+  jpeg_aug_prob: 0.5
+  jpeg_aug_qmin: 60
+  jpeg_aug_qmax: 95
+  early_stop_patience: 8
+
+data:
+  image_size: 1024
+  splits_path: data/splits.json
+  metadata_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json"
+  images_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/images/"
+
+output:
+  checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/dual_branch_r50.pth"
+  results: results/dual_branch_r50.md
+
+seed: 42

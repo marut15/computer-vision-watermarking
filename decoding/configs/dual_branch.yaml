@@ -1,0 +1,27 @@
+experiment:
+  name: dual_branch
+
+# Spatial ResNet-18 + spectral CNN, fused by concatenation. The spatial
+# branch keeps locality for fine-texture bits (sharpness, grain, detail);
+# the spectral branch sees the entire image at every layer and is meant to
+# rescue the global-statistic bits (bright/dark, contrast, saturation).
+model:
+  architecture: dual_branch
+  pretrained: true
+
+training:
+  batch_size: 8
+  num_epochs: 30
+  learning_rate: 0.0001
+
+data:
+  image_size: 512
+  splits_path: data/splits.json
+  metadata_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json"
+  images_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/images/"
+
+output:
+  checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/dual_branch.pth"
+  results: results/dual_branch.md
+
+seed: 42

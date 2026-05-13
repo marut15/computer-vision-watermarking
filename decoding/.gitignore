@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Mac
+.DS_Store
+
+# Model checkpoints (too large for Git)
+checkpoints/*.pth
+*.pth
+
+# But keep the directory structure
+!checkpoints/.gitkeep
+
+# Results - exclude generated test results
+results/test_results/*.json
+
+# Figures - exclude generated plots
+figures/*.png
+figures/*.jpg
+figures/*.pdf
+results/figures/*
+!results/figures/bitdiff_prompt_*.png
+!results/figures/bitdiff_prompt_*.json
+!results/figures/synthetic_*.png
+!results/figures/radial_ablation.png
+!results/figures/envelope_linear_probe.png
+!results/figures/per_bit_branch_compare.png
+!results/figures/cepstrum_delta.png
+!results/figures/delta_null_radial.png
+
+# Smoke test fixture and artifacts (synthetic dataset + checkpoints)
+.smoke/
+
+# Logs
+*.log
+# Exception: keep the staged training logs for new decoders so report writers
+# can read per-epoch trajectories from the repo.
+!results/training_logs/*.log
+
+# Data - large files
+data/images/
+data/baseline/
+
+# Keep splits.json (small, important for reproducibility)
+!data/splits.json
+
+# Environment
+venv/
+env/
+.env
+
+# Runtime evaluation manifests/logs
+.full_eval/
+.train_new/
