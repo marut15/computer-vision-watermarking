@@ -163,37 +163,19 @@ def _missing_cell(ax: plt.Axes, label: str = "missing") -> None:
     ax.axis("off")
 
 
-# A4 landscape in inches: 297 mm × 210 mm
-_A4_W = 11.69
-_A4_H = 8.27
+# A4 portrait in inches: 210 mm × 297 mm
+_A4_W = 8.27
+_A4_H = 11.69
 
 
-# ── save helpers ──────────────────────────────────────────────────────────────
+# ── save helper ───────────────────────────────────────────────────────────────
 
-def _save_page(fig: plt.Figure, output_dir: Path, stem: str, p_idx: int) -> None:
-    """Save one page as a PNG (300 DPI). Called inside the PdfPages context."""
-    png_path = output_dir / f"{stem}_p{p_idx:02d}.png"
-    fig.savefig(png_path, dpi=300, bbox_inches="tight")
-    print(f"    wrote {png_path}")
-
-
-def _save_multipage_pdf(
-    build_page: "callable[[int], plt.Figure]",
-    prompt_indices: list[int],
-    output_dir: Path,
-    stem: str,
-) -> None:
-    """Render one A4 page per prompt, write multi-page PDF + per-page PNGs."""
-    from matplotlib.backends.backend_pdf import PdfPages
-
-    pdf_path = output_dir / f"{stem}.pdf"
-    with PdfPages(pdf_path) as pdf:
-        for p_idx in prompt_indices:
-            fig = build_page(p_idx)
-            pdf.savefig(fig, bbox_inches="tight")
-            _save_page(fig, output_dir, stem, p_idx)
-            plt.close(fig)
-    print(f"  wrote {pdf_path}  ({len(prompt_indices)} pages)")
+def _save_figure(fig: plt.Figure, output_dir: Path, stem: str) -> None:
+    for ext in ("png", "pdf"):
+        out = output_dir / f"{stem}.{ext}"
+        fig.savefig(out, dpi=300, bbox_inches="tight")
+        print(f"  wrote {out}")
+    plt.close(fig)
 
 
 # ── Figure 1: Grad-CAM grid ───────────────────────────────────────────────────
@@ -214,6 +196,7 @@ def figure_gradcam(
         print("[gradcam] pytorch_grad_cam not found — pip install grad-cam  (skipping)")
         return
 
+    n_rows = len(prompt_indices)
     n_cols = 8
 
     to_tensor = transforms.Compose([
@@ -231,30 +214,36 @@ def figure_gradcam(
     target_layer = _spatial_target_layer(model)
     print(f"  [gradcam] target layer: {type(target_layer).__name__}")
 
-    def build_page(p_idx: int) -> plt.Figure:
-        fig, axes = plt.subplots(
-            1, n_cols,
-            figsize=(_A4_W, _A4_H),
-            squeeze=False,
-        )
-        row_axes = axes[0]
+    fig, axes = plt.subplots(
+        n_rows, n_cols,
+        figsize=(_A4_W, _A4_H),
+        squeeze=False,
+    )
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.96, bottom=0.01,
+                        wspace=0.04, hspace=0.06)
 
-        for bit_idx in range(n_cols):
-            ax = row_axes[bit_idx]
-            ax.set_title(f"S{bit_idx + 1}", fontsize=11, fontweight="bold", pad=4)
+    with GradCAM(model=model, target_layers=[target_layer]) as cam:
+        for row, p_idx in enumerate(prompt_indices):
+            for bit_idx in range(n_cols):
+                ax = axes[row][bit_idx]
 
-            entry = index.get((2 ** (7 - bit_idx), p_idx))
-            if entry is None:
-                _missing_cell(ax)
-                continue
+                if row == 0:
+                    ax.set_title(f"S{bit_idx + 1}", fontsize=7, fontweight="bold", pad=2)
+                if bit_idx == 0:
+                    ax.set_ylabel(f"P{p_idx}", fontsize=6, rotation=0,
+                                  labelpad=14, va="center")
 
-            img_path = images_dir / entry["file"]
-            if not img_path.exists():
-                _missing_cell(ax)
-                continue
+                entry = index.get((2 ** (7 - bit_idx), p_idx))
+                if entry is None:
+                    _missing_cell(ax)
+                    continue
 
-            try:
-                with GradCAM(model=model, target_layers=[target_layer]) as cam:
+                img_path = images_dir / entry["file"]
+                if not img_path.exists():
+                    _missing_cell(ax)
+                    continue
+
+                try:
                     pil = Image.open(img_path).convert("RGB")
                     rgb_arr    = np.array(to_display(pil), dtype=np.float32) / 255.0
                     img_tensor = to_tensor(pil).unsqueeze(0).to(device)
@@ -262,23 +251,19 @@ def figure_gradcam(
                         input_tensor=img_tensor,
                         targets=[_BitLogitTarget(bit_idx)],
                     )
-                overlay = show_cam_on_image(rgb_arr, grayscale_cam[0], use_rgb=True)
-                ax.imshow(overlay)
-            except Exception as exc:
-                _missing_cell(ax, label=f"error\n{type(exc).__name__}")
-                print(f"  [gradcam] P{p_idx} bit{bit_idx}: {exc}")
+                    overlay = show_cam_on_image(rgb_arr, grayscale_cam[0], use_rgb=True)
+                    ax.imshow(overlay)
+                except Exception as exc:
+                    _missing_cell(ax, label=f"error\n{type(exc).__name__}")
+                    print(f"  [gradcam] P{p_idx} bit{bit_idx}: {exc}")
 
-            ax.axis("off")
+                ax.axis("off")
 
-        fig.suptitle(
-            f"Grad-CAM — single-bit-active images  |  prompt P{p_idx}",
-            fontsize=12, y=1.01,
-        )
-        fig.tight_layout()
-        return fig
-
-    print(f"  [gradcam] rendering {len(prompt_indices)} pages ...")
-    _save_multipage_pdf(build_page, prompt_indices, output_dir, "paper_gradcam_templates_bits")
+    fig.suptitle(
+        "Grad-CAM on single-bit-active images  (rows = prompts, cols = sliders S1–S8)",
+        fontsize=8, y=0.99,
+    )
+    _save_figure(fig, output_dir, "paper_gradcam_templates_bits")
 
 
 # ── Figure 2: FFT grid ────────────────────────────────────────────────────────
@@ -290,21 +275,26 @@ def figure_fft(
     prompt_indices: list[int],
     output_dir: Path,
 ) -> None:
+    n_rows = len(prompt_indices)
     n_cols = 5
     col_labels = ["Baseline", "All bits = 1", "Baseline FFT", "All-bits FFT", "FFT difference"]
 
-    def build_page(p_idx: int) -> plt.Figure:
-        fig, axes = plt.subplots(
-            1, n_cols,
-            figsize=(_A4_W, _A4_H),
-            squeeze=False,
-        )
-        row_axes = axes[0]
+    fig, axes = plt.subplots(
+        n_rows, n_cols,
+        figsize=(_A4_W, _A4_H),
+        squeeze=False,
+    )
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.96, bottom=0.01,
+                        wspace=0.04, hspace=0.06)
 
-        for col, label in enumerate(col_labels):
-            row_axes[col].set_title(label, fontsize=11, fontweight="bold", pad=4)
-        row_axes[0].set_ylabel(f"P{p_idx}", fontsize=10, rotation=0,
-                               labelpad=24, va="center")
+    for row, p_idx in enumerate(prompt_indices):
+        row_axes = axes[row]
+
+        if row == 0:
+            for col, label in enumerate(col_labels):
+                row_axes[col].set_title(label, fontsize=7, fontweight="bold", pad=2)
+        row_axes[0].set_ylabel(f"P{p_idx}", fontsize=6, rotation=0,
+                               labelpad=14, va="center")
 
         bl_path       = _baseline_path(baseline_dir, p_idx)
         allbits_entry = index.get((255, p_idx))
@@ -320,45 +310,42 @@ def figure_fft(
                 print(f"  [fft] P{p_idx}: baseline not found at {bl_path}")
             if not allbits_ok:
                 print(f"  [fft] P{p_idx}: all-bits image not found")
-        else:
-            try:
-                bl_img = _open_rgb(bl_path)
-                ab_img = _open_rgb(allbits_path)
+            continue
 
-                if ab_img.shape != bl_img.shape:
-                    h, w   = bl_img.shape[:2]
-                    ab_img = np.asarray(
-                        Image.fromarray((ab_img * 255).astype(np.uint8))
-                        .resize((w, h), Image.LANCZOS),
-                        dtype=np.float32,
-                    ) / 255.0
+        try:
+            bl_img = _open_rgb(bl_path)
+            ab_img = _open_rgb(allbits_path)
 
-                fft_bl  = _log_fft_magnitude(bl_img)
-                fft_ab  = _log_fft_magnitude(ab_img)
-                diff    = fft_ab - fft_bl
-                abs_max = float(np.abs(diff).max()) or 1e-6
+            if ab_img.shape != bl_img.shape:
+                h, w   = bl_img.shape[:2]
+                ab_img = np.asarray(
+                    Image.fromarray((ab_img * 255).astype(np.uint8))
+                    .resize((w, h), Image.LANCZOS),
+                    dtype=np.float32,
+                ) / 255.0
 
-                row_axes[0].imshow(bl_img);  row_axes[0].axis("off")
-                row_axes[1].imshow(ab_img);  row_axes[1].axis("off")
-                row_axes[2].imshow(fft_bl, cmap="magma");  row_axes[2].axis("off")
-                row_axes[3].imshow(fft_ab, cmap="magma");  row_axes[3].axis("off")
-                row_axes[4].imshow(diff, cmap="seismic",
-                                   vmin=-abs_max, vmax=abs_max);  row_axes[4].axis("off")
+            fft_bl  = _log_fft_magnitude(bl_img)
+            fft_ab  = _log_fft_magnitude(ab_img)
+            diff    = fft_ab - fft_bl
+            abs_max = float(np.abs(diff).max()) or 1e-6
 
-            except Exception as exc:
-                for ax in row_axes:
-                    _missing_cell(ax, label=f"error\n{type(exc).__name__}")
-                print(f"  [fft] P{p_idx}: {exc}")
+            row_axes[0].imshow(bl_img);  row_axes[0].axis("off")
+            row_axes[1].imshow(ab_img);  row_axes[1].axis("off")
+            row_axes[2].imshow(fft_bl, cmap="magma");  row_axes[2].axis("off")
+            row_axes[3].imshow(fft_ab, cmap="magma");  row_axes[3].axis("off")
+            row_axes[4].imshow(diff, cmap="seismic",
+                               vmin=-abs_max, vmax=abs_max);  row_axes[4].axis("off")
 
-        fig.suptitle(
-            f"FFT: baseline vs all-bits-on watermarked  |  prompt P{p_idx}",
-            fontsize=12, y=1.01,
-        )
-        fig.tight_layout()
-        return fig
+        except Exception as exc:
+            for ax in row_axes:
+                _missing_cell(ax, label=f"error\n{type(exc).__name__}")
+            print(f"  [fft] P{p_idx}: {exc}")
 
-    print(f"  [fft] rendering {len(prompt_indices)} pages ...")
-    _save_multipage_pdf(build_page, prompt_indices, output_dir, "paper_fft_baseline_vs_allbits")
+    fig.suptitle(
+        "FFT: baseline vs all-bits-on watermarked  (rows = prompts)",
+        fontsize=8, y=0.99,
+    )
+    _save_figure(fig, output_dir, "paper_fft_baseline_vs_allbits")
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
