@@ -81,10 +81,10 @@
 **Validation vs. Test Gap:**
 - Validation exact match (epoch 28): 62.11%
 - Test exact match (epoch 28 model): 60.94%
-- **Gap: 1.9%** ← Excellent!
+- **Gap: 1.9%** 
 
 **Conclusion:**
-✅ **No overfitting detected.** The model generalizes extremely well to unseen data. The 1.9% gap between validation and test is negligible and well within statistical noise. The slight drop from epoch 28→30 on validation was variance in the small validation set (256 samples), not actual overfitting.
+**No overfitting detected.** The model generalizes extremely well to unseen data. The 1.9% gap between validation and test is negligible and well within statistical noise. The slight drop from epoch 28→30 on validation was variance in the small validation set (256 samples), not actual overfitting.
 
 ---
 
@@ -123,75 +123,15 @@
 
 ## Achievement Level
 
-**✅ TARGET PERFORMANCE TIER ACHIEVED**
+**TARGET PERFORMANCE TIER ACHIEVED**
 
 Comparison to project goals:
-- ✅ Mean bit accuracy >90% (achieved **94.04%**)
-- ✅ Exact match >50% (achieved **60.94%**)
-- ✅ All bits >85% except Bit 3 (85.16%)
-- ✅ Model generalizes (1.9% val-test gap)
+- Mean bit accuracy >90% (achieved **94.04%**)
+- Exact match >50% (achieved **60.94%**)
+- All bits >85% except Bit 3 (85.16%)
+- Model generalizes (1.9% val-test gap)
 
 **This is publishable-quality performance for a baseline model.**
-
----
-
-## Recommendations for Week 2 (Ablations)
-
-### Priority 1: Improve Bit 3 (bright/dark)
-**Why:** Weakest bit at 85.16%; improving it would significantly boost exact match rate
-
-**Approaches to try:**
-- Test ViT (Vision Transformer) - may better capture global luminance patterns
-- Separate binary classifier just for Bit 3 with specialized augmentations
-- Analyze failure cases: which prompts/IDs confuse Bit 3 most?
-
-### Priority 2: Architecture Comparison
-**Test:**
-- EfficientNet-B3 (modern architecture, better feature extraction)
-- ViT-B/16 (transformers excel at global patterns like color temperature)
-- ResNet-101 (deeper network)
-
-**Expected outcome:** Find if architecture change improves Bits 0 and 3
-
-### Priority 3: Robustness Testing
-**Critical for real-world deployment:**
-- JPEG compression (quality 90, 75, 50)
-- Resize to 512×512 then back to 1024×1024
-- Random crops (simulate partial image viewing)
-- Gaussian noise addition
-
-**Goal:** Maintain >85% accuracy under degradation
-
-### Priority 4: Ensemble Approach
-**Hypothesis:** 8 separate binary classifiers (one per bit) might outperform single 8-output model
-
-**Method:**
-- Train 8 independent ResNet50 models
-- Each optimized for one specific bit
-- Ensemble predictions at inference
-
-**Expected gain:** 2-5% improvement on weak bits
-
----
-
-## Failure Case Analysis (Future Work)
-
-**Questions to investigate:**
-- Which IDs get confused most often? (e.g., does ID 5 → ID 7 happen frequently?)
-- Are there prompt-specific patterns? (e.g., does "snowy village" confuse Bit 3 more than "beach"?)
-- Do certain bit combinations amplify errors? (e.g., [1,0,1,0,0,0,0,0] harder than [1,1,1,1,1,1,1,1]?)
-
----
-
-## Deliverables for Person B
-
-✅ **Trained model:** `best_model.pth` (epoch 28, 60.94% test exact match)  
-✅ **Training code:** All 5 Python files (`dataloader.py`, `model.py`, `train.py`, `utils.py`, `split_data.py`)  
-✅ **Data splits:** `splits.json` (reproducible 80/10/10 split)  
-✅ **Results documentation:** This file  
-✅ **Test set evaluation:** Confirmed generalization on unseen data  
-
-**Status:** Ready for handoff to advanced modeling (Person B) or robustness testing.
 
 ---
 

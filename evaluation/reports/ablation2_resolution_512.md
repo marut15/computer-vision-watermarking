@@ -15,8 +15,6 @@ Test if the watermark signal requires full 1024×1024 resolution or if 512×512 
 
 ## Results
 
-### 🎉 SURPRISING OUTCOME: 512×512 WINS!
-
 **Test Set Performance:**
 - **Mean bit accuracy:** 93.90% (vs 94.04% at 1024) - only 0.14% drop
 - **Exact match rate:** **63.67%** (vs 60.94% at 1024) - **+2.73% improvement!**
@@ -26,20 +24,20 @@ Test if the watermark signal requires full 1024×1024 resolution or if 512×512 
 
 | Bit | Slider | 1024×1024 | 512×512 | Difference |
 |-----|--------|-----------|---------|------------|
-| 0 | warm/cool | 91.41% | **92.58%** | +1.17% ✅ |
+| 0 | warm/cool | 91.41% | **92.58%** | +1.17% |
 | 1 | sharp/soft | 94.53% | 94.53% | 0% |
-| 2 | grainy/clean | 94.53% | **96.09%** | +1.56% ✅ |
-| 3 | bright/dark | 85.16% | **89.06%** | **+3.90%** ✅ |
-| 4 | contrast | 92.97% | 89.84% | -3.13% ❌ |
-| 5 | saturation | 98.05% | 94.92% | -3.13% ❌ |
+| 2 | grainy/clean | 94.53% | **96.09%** | +1.56% |
+| 3 | bright/dark | 85.16% | **89.06%** | **+3.90%** |
+| 4 | contrast | 92.97% | 89.84% | -3.13% |
+| 5 | saturation | 98.05% | 94.92% | -3.13% |
 | 6 | detail | 99.22% | 99.22% | 0% |
 | 7 | vintage/modern | 96.48% | 94.92% | -1.56% |
 
 **Key findings:**
-- ✅ **Bit 3 improved massively:** +3.90% (weakest bit became much stronger!)
-- ✅ **Bit 0 improved:** +1.17% (second-weakest bit also improved)
-- ✅ **Bit 6 unchanged:** 99.22% (detail detection unaffected by resolution)
-- ❌ **Bits 4, 5 dropped ~3%:** But overall system still improved
+- **Bit 3 improved massively:** +3.90% (weakest bit became much stronger!)
+- **Bit 0 improved:** +1.17% (second-weakest bit also improved)
+- **Bit 6 unchanged:** 99.22% (detail detection unaffected by resolution)
+- **Bits 4, 5 dropped ~3%:** But overall system still improved
 
 ### Training Dynamics
 - **Best model saved:** Epoch 19 (vs epoch 28 at 1024)
@@ -78,18 +76,16 @@ Test if the watermark signal requires full 1024×1024 resolution or if 512×512 
 
 ## Practical Implications
 
-### 🚀 HUGE Deployment Win
-
 **Performance benefits:**
-- ✅ Higher exact match rate: 63.67% vs 60.94% (+2.73%)
-- ✅ Improved weakest bits (0, 3)
-- ✅ Better generalization (lower val-test gap)
+- Higher exact match rate: 63.67% vs 60.94% (+2.73%)
+- Improved weakest bits (0, 3)
+- Better generalization (lower val-test gap)
 
 **Computational benefits:**
-- ✅ **4× faster inference** (512² vs 1024² = 4× fewer pixels)
-- ✅ **4× less memory** required
-- ✅ **35% faster training** (15 min vs 23 min)
-- ✅ Can deploy on smaller/cheaper GPUs
+- **4× faster inference** (512² vs 1024² = 4× fewer pixels)
+- **4× less memory** required
+- **35% faster training** (15 min vs 23 min)
+- Can deploy on smaller/cheaper GPUs
 
 **This means:**
 - Real-time watermark detection is feasible
@@ -101,12 +97,12 @@ Test if the watermark signal requires full 1024×1024 resolution or if 512×512 
 | Aspect | 1024×1024 | 512×512 | Winner |
 |--------|-----------|---------|--------|
 | Test Accuracy | 94.04% | 93.90% | ≈ Tie |
-| Exact Match | 60.94% | **63.67%** | ✅ 512×512 |
-| Training Time | 23 min | 15 min | ✅ 512×512 |
-| Inference Speed | 1× | **4×** | ✅ 512×512 |
-| Memory Usage | 1× | **0.25×** | ✅ 512×512 |
-| Generalization | Good (1.9% gap) | **Better (1.2% gap)** | ✅ 512×512 |
-| Bit 3 (weakest) | 85.16% | **89.06%** | ✅ 512×512 |
+| Exact Match | 60.94% | **63.67%** | 512×512 |
+| Training Time | 23 min | 15 min | 512×512 |
+| Inference Speed | 1× | **4×** | 512×512 |
+| Memory Usage | 1× | **0.25×** | 512×512 |
+| Generalization | Good (1.9% gap) | **Better (1.2% gap)** | 512×512 |
+| Bit 3 (weakest) | 85.16% | **89.06%** | 512×512 |
 
 ## Conclusion
 
