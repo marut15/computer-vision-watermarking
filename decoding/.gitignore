@@ -31,31 +31,14 @@ checkpoints/*.pth
 # But keep the directory structure
 !checkpoints/.gitkeep
 
-# Results - exclude generated test results
-results/test_results/*.json
-
-# Figures - exclude generated plots
-figures/*.png
-figures/*.jpg
-figures/*.pdf
-results/figures/*
-!results/figures/bitdiff_prompt_*.png
-!results/figures/bitdiff_prompt_*.json
-!results/figures/synthetic_*.png
-!results/figures/radial_ablation.png
-!results/figures/envelope_linear_probe.png
-!results/figures/per_bit_branch_compare.png
-!results/figures/cepstrum_delta.png
-!results/figures/delta_null_radial.png
+# Evaluation outputs (plots, metrics, reports) now live under the top-level
+# evaluation/ directory; see evaluation/.gitignore.
 
 # Smoke test fixture and artifacts (synthetic dataset + checkpoints)
 .smoke/
 
 # Logs
 *.log
-# Exception: keep the staged training logs for new decoders so report writers
-# can read per-epoch trajectories from the repo.
-!results/training_logs/*.log
 
 # Data - large files
 data/images/

@@ -1,0 +1,3 @@
+# Scratch dirs written by the job runners under evaluation/scripts/jobs/
+.full_eval/
+__pycache__/

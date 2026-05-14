@@ -21,13 +21,13 @@ from tqdm import tqdm
 
 HERE = Path(__file__).resolve().parent
 DECODING_ROOT = HERE.parent
-sys.path.insert(0, str(DECODING_ROOT))
-sys.path.insert(0, str(HERE))
+REPO_ROOT = DECODING_ROOT.parent
+sys.path.insert(0, str(REPO_ROOT))
 
-from src.dataloader import WatermarkDataset
-from src.model_vit import ViTWatermarkDecoder
-from src.utils import compute_metrics, print_metrics
-from _smoke_utils import default_data_paths, pick_device, resolve_paths
+from decoding.data.dataset import WatermarkDataset
+from decoding.models.vit import ViTWatermarkDecoder
+from decoding.common.metrics import compute_metrics, print_metrics
+from decoding.common.smoke import default_data_paths, pick_device, resolve_paths
 
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]

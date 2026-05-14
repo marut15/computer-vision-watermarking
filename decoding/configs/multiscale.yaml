@@ -20,6 +20,6 @@ data:
 
 output:
   checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/multiscale_pyramid.pth"
-  results: results/multiscale_pyramid.md
+  results: evaluation/results/metrics/multiscale_pyramid.md
 
 seed: 42

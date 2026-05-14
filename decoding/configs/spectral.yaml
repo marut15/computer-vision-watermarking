@@ -24,6 +24,6 @@ data:
 
 output:
   checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/spectral.pth"
-  results: results/spectral.md
+  results: evaluation/results/metrics/spectral.md
 
 seed: 42

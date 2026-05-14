@@ -7,9 +7,9 @@ Subcommands:
   s3-plan           emit the proposed S3 layout (JSON + Markdown).
   clean             remove obviously stale local artifacts (safe by default).
 
-This package adds `decoding/` to sys.path on import so the existing
-`from src.models import get_model` pattern used by every script in
-decoding/scripts/ continues to work unchanged from inside the CLI modules.
+This package puts the repository root on sys.path on import so the
+`from decoding.models import get_model` package imports used by the CLI
+command modules resolve regardless of the current working directory.
 """
 from __future__ import annotations
 
@@ -19,15 +19,13 @@ from pathlib import Path
 DECODING_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = DECODING_ROOT.parent
 
-# Match the convention used in decoding/scripts/*.py so we can reuse the
-# existing dataloader, model factory, and metric helpers without rewriting
-# anything. Idempotent.
-_decoding_str = str(DECODING_ROOT)
-if _decoding_str not in sys.path:
-    sys.path.insert(0, _decoding_str)
+# Put the repo root on sys.path so `import decoding.*` resolves, and so
+# project_paths can be imported below. Idempotent.
+_repo_str = str(REPO_ROOT)
+if _repo_str not in sys.path:
+    sys.path.insert(0, _repo_str)
 
 # Resolve the data root via project_paths so PROJECT_DATA_ROOT env var works.
-sys.path.insert(0, str(REPO_ROOT))
 from project_paths import Paths as _Paths  # noqa: E402
 
 _paths = _Paths()

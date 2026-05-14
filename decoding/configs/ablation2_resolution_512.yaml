@@ -18,7 +18,7 @@ data:
 
 output:
   checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/ablation2_resolution_512.pth"
-  results: results/ablation2_resolution_512.md
+  results: evaluation/results/metrics/ablation2_resolution_512.md
 
 seed: 42
 

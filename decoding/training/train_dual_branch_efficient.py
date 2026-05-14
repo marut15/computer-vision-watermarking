@@ -45,11 +45,12 @@ from torchvision import transforms
 
 HERE = Path(__file__).resolve().parent
 DECODING_ROOT = HERE.parent
-sys.path.insert(0, str(DECODING_ROOT))
+REPO_ROOT = DECODING_ROOT.parent
+sys.path.insert(0, str(REPO_ROOT))
 
-from src.dataloader import WatermarkDataset
-from src.models import get_model
-from src.utils import compute_metrics, print_metrics
+from decoding.data.dataset import WatermarkDataset
+from decoding.models import get_model
+from decoding.common.metrics import compute_metrics, print_metrics
 
 
 # ---------------------------- augmentations ---------------------------- #

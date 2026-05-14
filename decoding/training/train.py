@@ -10,12 +10,13 @@ from torch.utils.data import DataLoader, Subset
 from torchvision import transforms
 from tqdm import tqdm
 
-# Add parent directory to path to import from src
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add repo root to path so `import decoding.*` resolves
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, _REPO_ROOT)
 
-from src.dataloader import WatermarkDataset
-from src.models import get_model
-from src.utils import compute_metrics, print_metrics
+from decoding.data.dataset import WatermarkDataset
+from decoding.models import get_model
+from decoding.common.metrics import compute_metrics, print_metrics
 
 def train_one_epoch(model, loader, criterion, optimizer, device):
     model.train()
@@ -82,6 +83,11 @@ def main():
 
     with open(args.config, 'r') as f:
         config = _expand(yaml.safe_load(f))
+
+    # Resolve a relative splits_path against decoding/ so CWD doesn't matter.
+    _decoding_root = os.path.join(_REPO_ROOT, 'decoding')
+    if not os.path.isabs(config['data']['splits_path']):
+        config['data']['splits_path'] = os.path.join(_decoding_root, config['data']['splits_path'])
     
     print(f"\n{'='*60}")
     print(f"Experiment: {config['experiment']['name']}")

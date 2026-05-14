@@ -1,7 +1,7 @@
 """Canonical decoder registry: names, aliases, configs, default weights.
 
 Single source of truth used by every CLI subcommand. Mirrors
-decoding/src/models/__init__.py — do not invent architectures here that the
+decoding/models/__init__.py — do not invent architectures here that the
 factory does not support; the test command resolves names through this table
 and then calls `get_model(canonical_name, ...)`.
 """

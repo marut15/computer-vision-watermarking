@@ -40,6 +40,6 @@ data:
 
 output:
   checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/dual_branch_r50.pth"
-  results: results/dual_branch_r50.md
+  results: evaluation/results/metrics/dual_branch_r50.md
 
 seed: 42
