@@ -31,16 +31,8 @@ checkpoints/*.pth
 # But keep the directory structure
 !checkpoints/.gitkeep
 
-# Results - exclude generated test results
-results/test_results/*.json
-
-# Figures - exclude generated plots
-figures/*.png
-figures/*.jpg
-figures/*.pdf
-results/figures/*
-!results/figures/bitdiff_prompt_*.png
-!results/figures/bitdiff_prompt_*.json
+# Evaluation outputs (plots, metrics, reports) now live under the top-level
+# evaluation/ directory; see evaluation/.gitignore.
 
 # Smoke test fixture and artifacts (synthetic dataset + checkpoints)
 .smoke/
@@ -62,3 +54,4 @@ env/
 
 # Runtime evaluation manifests/logs
 .full_eval/
+.train_new/

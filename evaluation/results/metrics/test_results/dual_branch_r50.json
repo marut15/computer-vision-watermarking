@@ -1,0 +1,20 @@
+{
+  "experiment": "dual_branch_r50",
+  "architecture": "dual_branch_r50",
+  "checkpoint_epoch": 38,
+  "val_exact_match": 0.9609375,
+  "test_metrics": {
+    "mean_bit_accuracy": 1.0,
+    "exact_match_rate": 1.0,
+    "per_bit_accuracy": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  }
+}

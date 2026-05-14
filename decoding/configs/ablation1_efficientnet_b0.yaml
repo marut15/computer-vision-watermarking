@@ -13,11 +13,11 @@ training:
 data:
   image_size: 1024
   splits_path: data/splits.json
-  metadata_path: ../watermark_encoding/data/metadata.json
-  images_path: ../watermark_encoding/data/images/
+  metadata_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json"
+  images_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/images/"
 
 output:
-  checkpoint: checkpoints/ablation1_efficientnet_b0.pth
-  results: results/ablation1_efficientnet_b0.md
+  checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/ablation1_efficientnet_b0.pth"
+  results: evaluation/results/metrics/ablation1_efficientnet_b0.md
 
 seed: 42

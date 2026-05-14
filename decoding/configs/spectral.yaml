@@ -1,0 +1,29 @@
+experiment:
+  name: spectral
+
+# CNN over the 2D-FFT log-magnitude. Every input pixel contributes to every
+# frequency bin, so the model's receptive field is global at the very first
+# layer.
+model:
+  architecture: spectral
+  pretrained: false  # not pretrained — operates in frequency domain
+
+training:
+  batch_size: 16
+  num_epochs: 30
+  learning_rate: 0.0003
+
+# 1024 input → adaptive-avg-pooled to 256 before the FFT (see SpectralDecoder
+# fft_size). Source resolution affects how much spatial averaging happens
+# pre-FFT; 1024 keeps the option open at the dataloader level.
+data:
+  image_size: 1024
+  splits_path: data/splits.json
+  metadata_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json"
+  images_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/images/"
+
+output:
+  checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/spectral.pth"
+  results: evaluation/results/metrics/spectral.md
+
+seed: 42

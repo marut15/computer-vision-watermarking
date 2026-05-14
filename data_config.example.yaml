@@ -1,0 +1,34 @@
+# Copy to data_config.yaml (gitignored) to override path defaults.
+# Or set PROJECT_DATA_ROOT env var — that takes precedence over this file.
+#
+# Default when neither is set:
+#   ../data/computer-vision-watermarking  (relative to repo root)
+#   i.e.  /workspace/data/computer-vision-watermarking  on Runpod
+
+project_data_root: ../data/computer-vision-watermarking
+
+# Derived paths (all relative to project_data_root):
+#   decoding/checkpoints/           decoder .pth weights
+#   decoding/model_bundles/         per-architecture bundles (pth + logs + metrics)
+#   decoding/outputs/               decoded outputs
+#   encoding/models/                LoRA safetensors for encoding (s1–s8)
+#   watermark_encoding/data/images/ watermarked PNGs (2560 images)
+#   watermark_encoding/data/baseline/  original baseline PNGs (10 images)
+#   watermark_encoding/data/metadata.json
+#   watermark_encoding/models/      encoder model checkpoints (s1–s8)
+
+# Example: decoder CLI with explicit paths
+# export PROJECT_DATA_ROOT=/workspace/data/computer-vision-watermarking
+#
+# python -m decoding.cli test \
+#   --models all \
+#   --weights-root ${PROJECT_DATA_ROOT}/decoding/model_bundles \
+#   --metadata    ${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json \
+#   --images      ${PROJECT_DATA_ROOT}/watermark_encoding/data/images \
+#   --splits      decoding/data/splits.json
+#
+# python -m decoding.cli decode \
+#   --model dual_branch_r50 \
+#   --input      ${PROJECT_DATA_ROOT}/watermark_encoding/data/images \
+#   --weights-root ${PROJECT_DATA_ROOT}/decoding/model_bundles \
+#   --output     ${PROJECT_DATA_ROOT}/decoding/outputs/decoded_dual_branch_r50

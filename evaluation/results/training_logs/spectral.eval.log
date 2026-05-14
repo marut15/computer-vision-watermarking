@@ -1,0 +1,37 @@
+
+============================================================
+Evaluating: spectral
+Checkpoint: epoch 0
+Val exact match at save time: 0.0078
+============================================================
+
+Evaluating on test set...
+
+============================================================
+TEST SET RESULTS (unseen during training)
+============================================================
+
+Test Metrics:
+  Mean bit accuracy: 0.4897
+  Exact match rate:  0.0000
+  Per-bit accuracy:
+    Bit 0: 0.5000
+    Bit 1: 0.5000
+    Bit 2: 0.4727
+    Bit 3: 0.5000
+    Bit 4: 0.4453
+    Bit 5: 0.5000
+    Bit 6: 0.5000
+    Bit 7: 0.5000
+============================================================
+
+Comparison:
+  Val exact match (saved):  0.0078
+  Test exact match:         0.0000
+  Difference:               0.0078 (100.0%)
+
+ SEVERE OVERFITTING: Test >15% worse than validation
+ Model memorized training data, needs regularization
+
+Results saved to: results/test_results/spectral.json
+

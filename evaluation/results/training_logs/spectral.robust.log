@@ -1,0 +1,24 @@
+=== robustness_eval ===
+  model=spectral  device=cuda  smoke=False
+  loaded spectral from spectral.pth
+
+running attacks...
+             clean: mean=0.4897  exact=0.0000
+          jpeg_q90: mean=0.4912  exact=0.0000
+          jpeg_q75: mean=0.4922  exact=0.0000
+          jpeg_q50: mean=0.4897  exact=0.0000
+        resize_512: mean=0.4912  exact=0.0000
+    random_crop_75: mean=0.4937  exact=0.0000
+
+attack          b0     b1     b2     b3     b4     b5     b6     b7     mean   exact
+--------------  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
+clean           0.500  0.500  0.473  0.500  0.445  0.500  0.500  0.500  0.490  0.000
+jpeg_q90        0.500  0.500  0.484  0.500  0.445  0.500  0.500  0.500  0.491  0.000
+jpeg_q75        0.500  0.500  0.492  0.500  0.445  0.500  0.500  0.500  0.492  0.000
+jpeg_q50        0.500  0.500  0.473  0.500  0.445  0.500  0.500  0.500  0.490  0.000
+resize_512      0.500  0.500  0.484  0.500  0.445  0.500  0.500  0.500  0.491  0.000
+random_crop_75  0.500  0.500  0.477  0.500  0.473  0.500  0.500  0.500  0.494  0.000
+  wrote /workspace/new_models/spectral/figures/robustness_per_bit.png
+  wrote /workspace/new_models/spectral/figures/robustness_jpeg_curve.png
+
+results: /workspace/new_models/spectral/robustness.json

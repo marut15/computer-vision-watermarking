@@ -13,12 +13,12 @@ training:
 data:
   image_size: 512          # Changed from 1024
   splits_path: data/splits.json
-  metadata_path: ../watermark_encoding/data/metadata.json
-  images_path: ../watermark_encoding/data/images/
+  metadata_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json"
+  images_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/images/"
 
 output:
-  checkpoint: checkpoints/ablation2_resolution_512.pth
-  results: results/ablation2_resolution_512.md
+  checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/ablation2_resolution_512.pth"
+  results: evaluation/results/metrics/ablation2_resolution_512.md
 
 seed: 42
 

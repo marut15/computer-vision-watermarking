@@ -1,0 +1,29 @@
+experiment:
+  name: global_stats
+
+# Pure-MLP decoder over hand-crafted global image statistics.
+# No convolutions, so the receptive field is the entire image at every layer.
+# The 'pretrained' flag is ignored (no backbone).
+model:
+  architecture: global_stats
+  pretrained: false
+
+training:
+  batch_size: 32
+  num_epochs: 30
+  learning_rate: 0.0005
+
+# Stats are scale-equivariant so the resolution choice mostly affects FFT bin
+# resolution. 256 is enough to resolve the LoRA fingerprint and keeps the
+# global-stats forward pass essentially free.
+data:
+  image_size: 256
+  splits_path: data/splits.json
+  metadata_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json"
+  images_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/images/"
+
+output:
+  checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/global_stats.pth"
+  results: evaluation/results/metrics/global_stats.md
+
+seed: 42

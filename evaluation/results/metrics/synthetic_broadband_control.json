@@ -1,0 +1,11 @@
+{
+  "delta_linf": 0.32444411516189575,
+  "delta_l2_rms": 0.0599999837577343,
+  "energy_frac_central_128_full": 0.06300680339336395,
+  "energy_frac_central_64_full": 0.015645451843738556,
+  "uniform_baseline_central_128": 0.0625,
+  "spec_diff_linf": 2.6100704669952393,
+  "spec_diff_rms": 0.43099460005760193,
+  "spec_diff_energy_frac_central_64": 0.1460975706577301,
+  "spec_diff_energy_frac_central_32": 0.021773843094706535
+}

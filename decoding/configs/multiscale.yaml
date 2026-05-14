@@ -1,0 +1,25 @@
+experiment:
+  name: multiscale_pyramid
+
+# Image-pyramid ResNet-18 with avg / std / max pool fusion. Forces the model
+# to look at three scales (1.0, 0.5, 0.25) of the whole image at once.
+model:
+  architecture: multiscale_pyramid
+  pretrained: true
+
+training:
+  batch_size: 8
+  num_epochs: 30
+  learning_rate: 0.0001
+
+data:
+  image_size: 512
+  splits_path: data/splits.json
+  metadata_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/metadata.json"
+  images_path: "${PROJECT_DATA_ROOT}/watermark_encoding/data/images/"
+
+output:
+  checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/multiscale_pyramid.pth"
+  results: evaluation/results/metrics/multiscale_pyramid.md
+
+seed: 42

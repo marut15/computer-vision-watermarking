@@ -1,0 +1,20 @@
+{
+  "experiment": "spectral",
+  "architecture": "spectral",
+  "checkpoint_epoch": 0,
+  "val_exact_match": 0.0078125,
+  "test_metrics": {
+    "mean_bit_accuracy": 0.48974609375,
+    "exact_match_rate": 0.0,
+    "per_bit_accuracy": [
+      0.5,
+      0.5,
+      0.47265625,
+      0.5,
+      0.4453125,
+      0.5,
+      0.5,
+      0.5
+    ]
+  }
+}
