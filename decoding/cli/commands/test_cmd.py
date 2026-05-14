@@ -137,7 +137,7 @@ def _build_loader(args: argparse.Namespace, image_size: int):
     import torch  # noqa: F401
     from torch.utils.data import DataLoader, Subset
     from torchvision import transforms
-    from src.dataloader import WatermarkDataset  # type: ignore
+    from decoding.data.dataset import WatermarkDataset  # type: ignore
 
     paths = _default_data_paths()
     metadata = args.metadata or paths["metadata"]
@@ -173,8 +173,8 @@ def _eval_one(
     dual_w: Tuple[float, float],
 ) -> Dict:
     import torch
-    from src.models import get_model  # type: ignore
-    from src.utils import compute_metrics  # type: ignore
+    from decoding.models import get_model  # type: ignore
+    from decoding.common.metrics import compute_metrics  # type: ignore
 
     model = get_model(spec.name, num_outputs=8, pretrained=False)
     raw = torch.load(ck.path, map_location=device, weights_only=False)

@@ -70,3 +70,4 @@ credentials
 
 # ── Tooling artifacts ─────────────────────────────────────────────────────────
 .claude/
+evaluation/.full_eval/

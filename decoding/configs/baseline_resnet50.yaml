@@ -18,6 +18,6 @@ data:
 
 output:
   checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/baseline_resnet50.pth"
-  results: results/baseline_resnet50.md
+  results: evaluation/results/metrics/baseline_resnet50.md
 
 seed: 42

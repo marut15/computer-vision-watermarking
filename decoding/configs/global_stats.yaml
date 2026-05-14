@@ -24,6 +24,6 @@ data:
 
 output:
   checkpoint: "${PROJECT_DATA_ROOT}/decoding/checkpoints/global_stats.pth"
-  results: results/global_stats.md
+  results: evaluation/results/metrics/global_stats.md
 
 seed: 42

@@ -72,9 +72,9 @@ def find_targets(
                 targets.append(path)
                 continue
             if delete_figures and path.suffix in FIGURE_SUFFIXES:
-                # Only delete figures under decoding/figures/ or results/figures/
+                # Only delete figures under evaluation/results/figures/
                 rel = str(path.relative_to(root)).replace("\\", "/")
-                if "decoding/figures/" in rel or "decoding/results/figures/" in rel:
+                if "evaluation/results/figures/" in rel:
                     targets.append(path)
     # Deduplicate (a __pycache__ dir may also contain matching .pyc files).
     seen: Set[Path] = set()

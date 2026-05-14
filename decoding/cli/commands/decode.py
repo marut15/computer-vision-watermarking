@@ -185,7 +185,7 @@ def run(args: argparse.Namespace) -> int:
     image_size = args.image_size or spec.image_size
 
     import torch
-    from src.models import get_model  # type: ignore
+    from decoding.models import get_model  # type: ignore
 
     model = get_model(spec.name, num_outputs=8, pretrained=False)
     raw = torch.load(ckpt_path, map_location=device, weights_only=False)
