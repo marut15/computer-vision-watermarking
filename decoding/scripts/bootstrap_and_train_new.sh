@@ -113,7 +113,7 @@ SCRIPTS="${DECODING}/scripts"
 # ---------- 2. merge S3 staging into the repo ----------
 if [[ ${SKIP_SETUP} -eq 0 && ${SMOKE} -eq 0 ]]; then
   echo "[bootstrap] running setup_workspace.sh"
-  bash "${SCRIPTS}/setup_workspace.sh" --workspace "${WORKSPACE}"
+  bash "${REPO}/setup_environment/setup_workspace.sh" --workspace "${WORKSPACE}"
 else
   echo "[bootstrap] SKIP setup_workspace.sh"
 fi
@@ -149,8 +149,9 @@ fi
 
 # ---------- 4. preflight before training ----------
 if [[ ${SMOKE} -eq 0 ]]; then
-  META="${REPO}/watermark_encoding/data/metadata.json"
-  IMG_DIR="${REPO}/watermark_encoding/data/images"
+  DATA_ROOT="${PROJECT_DATA_ROOT:-${WORKSPACE}/data/computer-vision-watermarking}"
+  META="${DATA_ROOT}/watermark_encoding/data/metadata.json"
+  IMG_DIR="${DATA_ROOT}/watermark_encoding/data/images"
   if [[ ! -f "${META}" ]]; then
     echo "[bootstrap] ERROR: dataset metadata missing at ${META}" >&2
     echo "[bootstrap]        did setup_workspace.sh succeed? did S3 staging exist?" >&2

@@ -1,7 +1,13 @@
+import sys
 import torch
 import json
 from pathlib import Path
 from diffusers import DiffusionPipeline
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from project_paths import Paths
+
+_p = Paths()
 
 # --- CONFIG ---
 MODEL_ID = "stabilityai/stable-diffusion-xl-base-1.0"
@@ -12,19 +18,14 @@ NUM_INFERENCE_STEPS = 30
 ACTIVATE_AT_STEP = 25
 SEED = 42
 
-OUTPUT_DIR = Path("watermark_encoding/data/images")
-METADATA_PATH = Path("watermark_encoding/data/metadata.json")
+OUTPUT_DIR = _p.images_dir
+METADATA_PATH = _p.metadata
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 LORA_PATHS = [
-    "watermark_encoding/models/watermark_s1_alpha1.0_rank4_noxattn/watermark_s1_alpha1.0_rank4_noxattn_last.safetensors",
-    "watermark_encoding/models/watermark_s2_alpha1.0_rank4_noxattn/watermark_s2_alpha1.0_rank4_noxattn_last.safetensors",
-    "watermark_encoding/models/watermark_s3_alpha1.0_rank4_noxattn/watermark_s3_alpha1.0_rank4_noxattn_last.safetensors",
-    "watermark_encoding/models/watermark_s4_alpha1.0_rank4_noxattn/watermark_s4_alpha1.0_rank4_noxattn_last.safetensors",
-    "watermark_encoding/models/watermark_s5_alpha1.0_rank4_noxattn/watermark_s5_alpha1.0_rank4_noxattn_last.safetensors",
-    "watermark_encoding/models/watermark_s6_alpha1.0_rank4_noxattn/watermark_s6_alpha1.0_rank4_noxattn_last.safetensors",
-    "watermark_encoding/models/watermark_s7_alpha1.0_rank4_noxattn/watermark_s7_alpha1.0_rank4_noxattn_last.safetensors",
-    "watermark_encoding/models/watermark_s8_alpha1.0_rank4_noxattn/watermark_s8_alpha1.0_rank4_noxattn_last.safetensors",
+    str(_p.watermark_encoder_models / f"watermark_s{i}_alpha1.0_rank4_noxattn"
+        / f"watermark_s{i}_alpha1.0_rank4_noxattn_last.safetensors")
+    for i in range(1, 9)
 ]
 
 PROMPTS = [
@@ -82,7 +83,7 @@ for test_id in [0, 255]:
         generator=generator,
         callback_on_step_end=cb,
     ).images[0]
-    test_path = Path(f"watermark_encoding/data/sanity_id{test_id:03d}.png")
+    test_path = _p.watermark_data / f"sanity_id{test_id:03d}.png"
     image.save(test_path)
     assert test_path.exists(), f"Test image not saved: {test_path}"
     assert test_path.stat().st_size > 0, f"Test image is empty: {test_path}"
@@ -143,7 +144,7 @@ print(f"Metadata saved to {METADATA_PATH}")
 # --- GENERATE BASELINE (unwatermarked) IMAGES ---
 print("\nGenerating baseline unwatermarked images...")
 
-BASELINE_DIR = Path("watermark_encoding/data/baseline")
+BASELINE_DIR = _p.baseline_dir
 BASELINE_DIR.mkdir(parents=True, exist_ok=True)
 
 pipe.set_adapters(adapter_names, adapter_weights=[0.0] * 8)

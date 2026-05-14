@@ -24,10 +24,10 @@ The Runpod / cloud workflow assumes three folders under `/workspace/`:
 └── decoding/                       ← from S3 (checkpoints/ + results/)
 ```
 
-Run [decoding/scripts/setup_workspace.sh](decoding/scripts/setup_workspace.sh) to merge the two S3 staging folders into the cloned repo:
+Run [setup_environment/setup_workspace.sh](setup_environment/setup_workspace.sh) to merge the two S3 staging folders into the data root:
 
 ```bash
-bash computer-vision-watermarking/decoding/scripts/setup_workspace.sh --install-deps
+bash computer-vision-watermarking/setup_environment/setup_workspace.sh --install-deps
 ```
 
 After this, the data is at `computer-vision-watermarking/watermark_encoding/data/` and any pre-existing checkpoints are at `computer-vision-watermarking/decoding/checkpoints/`. Code under `decoding/{src,scripts,configs}/` is **never overwritten** by the merge — those live in git.
@@ -173,10 +173,10 @@ Runs each on the held-out **test split** (`splits.json` test indices) and writes
 
 ```bash
 cd /workspace
-bash computer-vision-watermarking/decoding/scripts/save_workspace.sh --strip-optimizer
+bash computer-vision-watermarking/setup_environment/save_workspace.sh --strip-optimizer
 ```
 
-[decoding/scripts/save_workspace.sh](decoding/scripts/save_workspace.sh) hardlinks the run outputs into a clean tree under `/workspace/{watermark_encoding,decoding}/`, ready to drag into S3 via the Runpod UI:
+[setup_environment/save_workspace.sh](setup_environment/save_workspace.sh) hardlinks the run outputs into a clean tree under `/workspace/{watermark_encoding,decoding}/`, ready to drag into S3 via the Runpod UI:
 
 ```
 /workspace/decoding/

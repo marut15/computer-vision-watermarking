@@ -24,6 +24,7 @@
 set -euo pipefail
 
 WORKSPACE="${WORKSPACE:-/workspace}"
+DATA_ROOT="${PROJECT_DATA_ROOT:-${WORKSPACE}/data/computer-vision-watermarking}"
 MODE="hardlink"          # hardlink | copy
 KEEP_500STEPS=0          # 1 to keep both LoRA snapshots (_last + _500steps)
 INCLUDE_OPTIMIZER=1      # 0 to strip optimizer_state_dict from .pth (~halves size)
@@ -34,6 +35,7 @@ Usage: bash save_workspace.sh [options]
 
 Options:
   --workspace PATH      Workspace root (default: /workspace)
+  --data-root PATH      Data root (default: \$PROJECT_DATA_ROOT or \$WORKSPACE/data/computer-vision-watermarking)
   --copy                Copy files instead of hardlinking (uses real disk)
   --keep-500steps       Include LoRA *_500steps.safetensors (default: drop)
   --strip-optimizer     Strip optimizer_state_dict from .pth files (~halves size)
@@ -45,6 +47,7 @@ EOF
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --workspace)        WORKSPACE="$2"; shift 2 ;;
+    --data-root)        DATA_ROOT="$2"; shift 2 ;;
     --copy)             MODE="copy"; shift ;;
     --keep-500steps)    KEEP_500STEPS=1; shift ;;
     --strip-optimizer)  INCLUDE_OPTIMIZER=0; shift ;;
@@ -53,22 +56,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-REPO="$(find "${WORKSPACE}" -maxdepth 2 -type d -name ".git" -printf "%h\n" 2>/dev/null | head -n1 || true)"
-if [[ -z "${REPO}" ]]; then
-  REPO="$(find "${WORKSPACE}" -maxdepth 2 -type d -name "decoding" -printf "%h\n" 2>/dev/null | head -n1 || true)"
-fi
-if [[ -z "${REPO}" || ! -d "${REPO}" ]]; then
-  echo "[save] could not find a cloned repo under ${WORKSPACE}" >&2
+if [[ ! -d "${DATA_ROOT}" ]]; then
+  echo "[save] data root not found: ${DATA_ROOT}" >&2
+  echo "[save] set PROJECT_DATA_ROOT or pass --data-root" >&2
   exit 2
 fi
 
-WE_SRC="${REPO}/watermark_encoding"
-DEC_SRC="${REPO}/decoding"
+WE_SRC="${DATA_ROOT}/watermark_encoding"
+DEC_SRC="${DATA_ROOT}/decoding"
 WE_DST="${WORKSPACE}/watermark_encoding"
 DEC_DST="${WORKSPACE}/decoding"
 
+echo "[save] data root: ${DATA_ROOT}"
 echo "[save] workspace: ${WORKSPACE}"
-echo "[save] repo:      ${REPO}"
 echo "[save] mode:      ${MODE}"
 
 rm -rf "${WE_DST}" "${DEC_DST}"
@@ -91,13 +91,13 @@ xfer() {
 
 # optional: strip optimizer state from .pth files (reduces ViT 983MB -> ~340MB)
 if [[ ${INCLUDE_OPTIMIZER} -eq 0 ]]; then
-  echo "[save] stripping optimizer_state_dict from checkpoints in repo first"
-  python3 - "${REPO}" <<'PY'
+  echo "[save] stripping optimizer_state_dict from checkpoints"
+  python3 - "${DATA_ROOT}" <<'PY'
 import os, sys, glob, torch
-repo = sys.argv[1]
+data_root = sys.argv[1]
 ckpts = sorted(
-    glob.glob(os.path.join(repo, "decoding/checkpoints/*.pth"))
-    + glob.glob(os.path.join(repo, "decoding/checkpoints/separate/bit_*_best.pth"))
+    glob.glob(os.path.join(data_root, "decoding/checkpoints/*.pth"))
+    + glob.glob(os.path.join(data_root, "decoding/checkpoints/separate/bit_*_best.pth"))
 )
 for path in ckpts:
     ckpt = torch.load(path, map_location="cpu", weights_only=False)
@@ -106,9 +106,9 @@ for path in ckpts:
         ckpt.pop("optimizer_state_dict", None)
         torch.save(ckpt, path)
         after = os.path.getsize(path)
-        print(f"  {os.path.relpath(path, repo)}: {before/1e6:.0f}MB -> {after/1e6:.0f}MB")
+        print(f"  {os.path.relpath(path, data_root)}: {before/1e6:.0f}MB -> {after/1e6:.0f}MB")
     else:
-        print(f"  {os.path.relpath(path, repo)}: no optimizer state, kept as-is")
+        print(f"  {os.path.relpath(path, data_root)}: no optimizer state, kept as-is")
 PY
 fi
 
