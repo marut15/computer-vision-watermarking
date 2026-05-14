@@ -17,7 +17,7 @@ from ..registry import MODELS, ModelSpec
 from ..s3 import join_s3
 
 
-DEFAULT_BUCKET = "s3://<bucket>/computer-vision-watermarking"
+DEFAULT_BUCKET = "s3://watermark-decoder-mai-bocconi-2026-427222695152-us-east-1-an/computer-vision-watermarking"
 
 
 def add_arguments(p: argparse.ArgumentParser) -> None:

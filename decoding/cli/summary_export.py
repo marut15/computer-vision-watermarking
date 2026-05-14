@@ -8,8 +8,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 
-# Files we *expect* to find in a fully-populated repo. Anything missing is
-# reported, never silently dropped.
+# Files we *expect* to find in a fully-populated repo. Anything missing is reported, never silently dropped.
 EXPECTED_RESULTS: tuple[str, ...] = (
     "dual_branch_ablation.json",
     "robustness.json",
