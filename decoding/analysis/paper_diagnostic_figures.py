@@ -16,7 +16,7 @@ Usage
 -----
     python decoding/scripts/paper_diagnostic_figures.py \\
         --model dual_branch_r50 \\
-        --output-dir decoding/results/figures
+        --output-dir evaluation/figures
 """
 from __future__ import annotations
 
@@ -357,7 +357,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--metadata",     default=str(_p.metadata))
     ap.add_argument("--images",       default=str(_p.images_dir))
     ap.add_argument("--baseline-dir", default=str(_p.baseline_dir))
-    ap.add_argument("--output-dir",   default=str(DECODING_ROOT / "results" / "figures"))
+    ap.add_argument("--output-dir",   default=str(REPO_ROOT / "evaluation" / "figures"))
     ap.add_argument("--prompt-indices", default=None,
                     help="Comma-separated prompt indices, e.g. 0,1,2; default: all")
     ap.add_argument("--max-prompts", type=int, default=None,

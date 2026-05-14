@@ -27,6 +27,7 @@ from torchvision import transforms
 
 HERE = Path(__file__).resolve().parent
 DECODING_ROOT = HERE.parent
+REPO_ROOT = DECODING_ROOT.parent
 sys.path.insert(0, str(DECODING_ROOT))
 sys.path.insert(0, str(HERE))
 
@@ -390,7 +391,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--images", type=str, default=None)
     p.add_argument("--splits", type=str, default=None)
     p.add_argument("--baseline-dir", type=str, default=None)
-    p.add_argument("--output-dir", type=str, default=str(DECODING_ROOT / "results" / "figures"))
+    p.add_argument("--output-dir", type=str, default=str(REPO_ROOT / "evaluation" / "figures"))
     p.add_argument("--checkpoint", type=str, default=str(DECODING_ROOT / "checkpoints" / "best_model.pth"))
     p.add_argument("--smoke-root", type=str, default=str(DECODING_ROOT / ".smoke"))
     p.add_argument("--skip-gradcam", action="store_true")

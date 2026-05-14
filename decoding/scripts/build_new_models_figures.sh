@@ -128,7 +128,7 @@ done
 
 # 2. Generate figures.
 echo "[build-figs] generating figures..."
-"${PYTHON}" "${HERE}/build_new_models_figures.py" \
+"${PYTHON}" "${HERE}/../analysis/build_new_models_figures.py" \
   --staging-root "${STAGING_ROOT}" \
   --figures-root "${FIGURES_ROOT}" \
   --logs-dir "${LOGS_DIR}" \

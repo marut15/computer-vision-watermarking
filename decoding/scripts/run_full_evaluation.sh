@@ -193,7 +193,7 @@ MANIFEST_SEP=""
 # 1. signal analysis
 SIGNAL_OUTPUT="${DECODING}/results/figures/gradcam_per_bit.png"
 run_step "01_signal_analysis" "${SIGNAL_OUTPUT}" "${SKIP_SIGNAL}" \
-  "${PYTHON}" scripts/signal_analysis.py \
+  "${PYTHON}" analysis/signal_analysis.py \
     --metadata "${META}" --images "${IMAGES}" \
     --output-dir "${DECODING}/results/figures" \
     --checkpoint "${CKPT_RESNET}"

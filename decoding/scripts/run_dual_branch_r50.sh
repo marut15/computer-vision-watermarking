@@ -161,7 +161,7 @@ run_step() {
 
 # ---------- 1. train ---------- #
 TRAIN_LOG="${TARGET}/training.log"
-TRAIN_ARGS=("${PYTHON}" scripts/train_dual_branch_efficient.py
+TRAIN_ARGS=("${PYTHON}" training/train_dual_branch_efficient.py
             --config "${CONFIG}" --num-workers "${NUM_WORKERS}")
 if [[ -n "${MAX_EPOCHS}" ]]; then
   TRAIN_ARGS+=(--max-epochs "${MAX_EPOCHS}")
@@ -200,7 +200,7 @@ fi
 ABL_OUT="${TARGET}/ablation.json"
 ABL_LOG="${TARGET}/ablation.log"
 run_step "ablation" "${ABL_OUT}" "${SKIP_ABLATE}" "${ABL_LOG}" \
-  "${PYTHON}" scripts/ablate_dual_branch.py \
+  "${PYTHON}" analysis/ablate_dual_branch.py \
     --config "${CONFIG}" \
     --arch "${ARCH}" \
     --checkpoint "${CKPT}" \

@@ -37,17 +37,17 @@ run_step() {
 cd "${DECODING_ROOT}"
 
 # 1. ensure the synthetic fixture exists (idempotent)
-run_step "00_fixture" "${PYTHON}" scripts/_smoke_utils.py
+run_step "00_fixture" "${PYTHON}" _smoke_utils.py
 
 # 2. train_separate
-run_step "01_train_separate" "${PYTHON}" scripts/train_separate.py --smoke
+run_step "01_train_separate" "${PYTHON}" training/train_separate.py --smoke
 
 # 3. train_vit
-run_step "02_train_vit" "${PYTHON}" scripts/train_vit.py --smoke
+run_step "02_train_vit" "${PYTHON}" training/train_vit.py --smoke
 
 # 4. signal_analysis (skip Grad-CAM by default to keep it under budget; the
 #    flag still exercises the analysis dispatch)
-run_step "03_signal_analysis" "${PYTHON}" scripts/signal_analysis.py --smoke --skip-gradcam
+run_step "03_signal_analysis" "${PYTHON}" analysis/signal_analysis.py --smoke --skip-gradcam
 
 # 5. robustness_eval
 run_step "04_robustness_eval" "${PYTHON}" scripts/robustness_eval.py --smoke --model resnet

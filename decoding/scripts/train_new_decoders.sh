@@ -75,7 +75,7 @@ mkdir -p "${LOG_DIR}" "${DECODING}/checkpoints" "${DECODING}/results"
 # train.py points at it. The override configs live under .train_new/configs/.
 if [[ "${SMOKE}" -eq 1 ]]; then
   echo "[train] smoke mode — synthesizing fixture and writing override configs"
-  "${PYTHON}" scripts/_smoke_utils.py
+  "${PYTHON}" _smoke_utils.py
   SMOKE_ROOT="${DECODING}/.smoke"
   SMOKE_META="${SMOKE_ROOT}/metadata.json"
   SMOKE_IMG="${SMOKE_ROOT}/images"
@@ -162,7 +162,7 @@ run_step() {
   echo "==================================================="
   local t0 t1 dt
   t0="$(date +%s)"
-  if "${PYTHON}" scripts/train.py --config "${config}" >"${logfile}" 2>&1; then
+  if "${PYTHON}" training/train.py --config "${config}" >"${logfile}" 2>&1; then
     t1="$(date +%s)"; dt=$(( t1 - t0 ))
     echo "[train] ${label}: PASSED (${dt}s)  →  ${output}"
     STEPS_RUN+=("${label}")

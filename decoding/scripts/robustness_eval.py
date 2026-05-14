@@ -28,6 +28,7 @@ from torchvision import transforms
 
 HERE = Path(__file__).resolve().parent
 DECODING_ROOT = HERE.parent
+REPO_ROOT = DECODING_ROOT.parent
 sys.path.insert(0, str(DECODING_ROOT))
 sys.path.insert(0, str(HERE))
 
@@ -337,7 +338,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--image-size", type=int, default=1024)
     p.add_argument("--batch-size", type=int, default=8)
     p.add_argument("--num-workers", type=int, default=2)
-    p.add_argument("--output-dir", type=str, default=str(DECODING_ROOT / "results" / "figures"))
+    p.add_argument("--output-dir", type=str, default=str(REPO_ROOT / "evaluation" / "figures"))
     p.add_argument("--results-json", type=str, default=str(DECODING_ROOT / "results" / "robustness.json"))
     p.add_argument("--smoke-root", type=str, default=str(DECODING_ROOT / ".smoke"))
     return p.parse_args()
