@@ -146,7 +146,7 @@ def main():
     os.makedirs(os.path.dirname(config['output']['checkpoint']), exist_ok=True)
     
     # Training loop
-    best_exact_match = 0
+    best_exact_match = -1.0
     
     for epoch in range(config['training']['num_epochs']):
         print(f"\n{'='*60}")

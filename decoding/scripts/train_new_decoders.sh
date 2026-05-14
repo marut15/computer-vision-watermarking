@@ -81,12 +81,13 @@ if [[ "${SMOKE}" -eq 1 ]]; then
   SMOKE_IMG="${SMOKE_ROOT}/images"
   SMOKE_SPLITS="${SMOKE_ROOT}/splits.json"
   OVERRIDE_DIR="${DECODING}/.train_new/configs"
-  mkdir -p "${OVERRIDE_DIR}"
+  SMOKE_CKPT_DIR="${DECODING}/.train_new/smoke_checkpoints"
+  mkdir -p "${OVERRIDE_DIR}" "${SMOKE_CKPT_DIR}"
   for arch in global_stats spectral multiscale dual_branch; do
     "${PYTHON}" - "${DECODING}/configs/${arch}.yaml" "${OVERRIDE_DIR}/${arch}.yaml" \
-                  "${SMOKE_META}" "${SMOKE_IMG}" "${SMOKE_SPLITS}" <<'PY'
-import sys, yaml
-src, dst, meta, imgs, splits = sys.argv[1:6]
+                  "${SMOKE_META}" "${SMOKE_IMG}" "${SMOKE_SPLITS}" "${SMOKE_CKPT_DIR}" <<'PY'
+import sys, yaml, os
+src, dst, meta, imgs, splits, ckpt_dir = sys.argv[1:7]
 cfg = yaml.safe_load(open(src))
 cfg["data"]["metadata_path"] = meta
 cfg["data"]["images_path"] = imgs
@@ -95,9 +96,8 @@ cfg["data"]["image_size"] = 64
 cfg["training"]["num_epochs"] = 2
 cfg["training"]["batch_size"] = 4
 cfg["model"]["pretrained"] = False  # offline / no ImageNet download in smoke mode
-cfg["output"]["checkpoint"] = cfg["output"]["checkpoint"].replace(
-    "checkpoints/", ".train_new/smoke_checkpoints/"
-)
+ckpt_name = os.path.basename(cfg["output"]["checkpoint"])
+cfg["output"]["checkpoint"] = os.path.join(ckpt_dir, ckpt_name)
 yaml.safe_dump(cfg, open(dst, "w"), sort_keys=False)
 PY
   done
