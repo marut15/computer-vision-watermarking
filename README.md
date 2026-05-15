@@ -42,7 +42,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Image data and model checkpoints are **not** in git (too large). Point the
+Image data and model checkpoints are **not** in git (too large), but they can be found at this link: https://drive.google.com/drive/folders/1Tg3HZLtD4kyKaET9nVvoxaKcYmKJCyus?usp=drive_link . Point the
 pipeline at a local data root:
 
 ```bash
