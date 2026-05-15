@@ -57,7 +57,7 @@ Every bit is now ≥ 99 %; the previously weakest bits (3 bright/dark and
 | Architecture | Params | Resolution | Mean bit | Exact match |
 |---|---:|---:|---:|---:|
 | **DualBranch R-50 (this work)** | **~36 M** | **1024** | **99.66 %** | **97.27 %** |
-| DualBranch R-18 | ~14 M | 512 | 97.78 % | 84.38 % |
+| DualBranch R-18 | ~14 M | 512 | 97.75 % | 84.38 % |
 | ResNet-50 baseline (shared head) | 25.6 M | 1024 | 93.12 % | 57.42 % |
 | ResNet-50 @ 512 (ablation 2) | 25.6 M | 512 | 93.90 % | 63.67 % |
 | EfficientNet-B0 | 4.0 M | 1024 | 92.58 % | 54.69 % |
@@ -96,7 +96,7 @@ features zeroed before fusion.
 
 | Mode | R-18 (512) | R-50 (1024) | Δ |
 |---|---:|---:|---:|
-| `full` | 97.78 % | 99.66 % | + 1.88 pp |
+| `full` | 97.75 % | 99.66 % | + 1.91 pp |
 | `no_spatial` | 96.14 % | 99.61 % | + 3.47 pp |
 | `no_spectral` | 49.90 % (chance) | 59.47 % | + 9.57 pp |
 
@@ -126,7 +126,7 @@ biggest change between R-18 and R-50.
 
 | Attack | DualBranch R-50 | DualBranch R-18 | ResNet-50 baseline | 8× separate |
 |---|---:|---:|---:|---:|
-| clean | **99.66 %** | 97.78 % | 93.12 % | 88.28 % |
+| clean | **99.66 %** | 97.75 % | 93.12 % | 88.28 % |
 | jpeg_q90 | **98.00 %** | — | 68.46 % | 77.73 % |
 | jpeg_q75 | **97.17 %** | 58.94 % | 56.45 % | 62.40 % |
 | jpeg_q50 | **84.96 %** | — | 53.20 % | 53.20 % |
