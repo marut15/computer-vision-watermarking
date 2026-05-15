@@ -114,23 +114,3 @@ Test if the watermark signal requires full 1024×1024 resolution or if 512×512 
 1. Lower resolution can actually improve performance
 2. Computational cost can be reduced 4× with no accuracy loss
 3. Deployment becomes dramatically more practical
-
-## Recommendation for Person B
-
-**Start all experiments at 512×512, not 1024×1024:**
-- Faster iteration (4× speedup per experiment)
-- Better baseline performance (63.67% exact match)
-- More practical for real-world deployment
-
-**If exploring even lower resolutions:**
-- Test 256×256 to find the lower bound
-- Might find even more speedup with acceptable accuracy
-
-**If needing maximum accuracy:**
-- Ensemble 512×512 and 1024×1024 models
-- Likely to get best of both worlds
-
-## Files Generated
-- Checkpoint: `checkpoints/ablation2_resolution_512.pth`
-- Test results: `results/test_results/ablation2_resolution_512.json`
-- Training time: ~15 minutes on RTX 4090
