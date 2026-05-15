@@ -61,7 +61,7 @@ Test if EfficientNet-B0 provides better accuracy than ResNet-50, particularly fo
 
 EfficientNet-B0 is too lightweight for this task. The watermark signals at scale 0.3 are subtle enough that they require the additional capacity of a larger model.
 
-**Recommendation:** Stick with ResNet-50 (94.04%, 60.94%) as baseline for Person B.
+**Recommendation:** Stick with ResNet-50 (94.04%, 60.94%) as baseline.
 
 **Future work:** If trying smaller models, EfficientNet-B3 (12M params) might be a better middle ground than B0.
 
