@@ -8,7 +8,7 @@ End-to-end evaluation of the three decoder architectures trained against the 8-b
 
 ## TL;DR
 
-- **Person A's shared-backbone ResNet-50 is the headline model.** Test mean bit accuracy 93.07 %, exact-match 57.03 %.
+- **Shared-backbone ResNet-50 is the headline model.** Test mean bit accuracy 93.07 %, exact-match 57.03 %.
 - **The 8 × separate ResNet-50 ensemble underperforms the shared backbone** at this dataset scale — 88.28 % / 33.59 % — despite having ~7.5× more parameters. The gap is concentrated in bit 3 (bright/dark): 58.20 % vs 82.81 %.
 - **ViT-B/16 fails to learn anything.** It plateaus at chance throughout training; test exact-match is exactly 0. Robustness eval confirms it is **literally image-blind** — identical predictions across clean, JPEG q=90/75/50, and resize attacks (per-bit accuracy matches to 4 decimal places).
 - **No architecture survives the spec robustness suite.** Every attack drops both models to near-chance on exact-match, with separate slightly more resilient than shared on JPEG and resize but neither usable under degradation.
@@ -29,7 +29,7 @@ End-to-end evaluation of the three decoder architectures trained against the 8-b
 | Epochs (Person A baseline / separate / ViT) | 30 / 25 / 20 |
 | Batch size | 16 (baseline) / 4 (separate at 1024) / 16 (ViT) |
 | Pretrained backbones | ImageNet (`torchvision` defaults) |
-| Hardware | NVIDIA RTX 4090 (Person A) · NVIDIA RTX PRO 6000 Blackwell (Person B) |
+| Hardware | NVIDIA RTX 4090 () · NVIDIA RTX PRO 6000 Blackwell (Person B) |
 
 ---
 
@@ -139,16 +139,16 @@ Across every architecture and every regime, bit 3 is the weakest:
 
 | Model | Bit 3 test acc |
 | --- | --- |
-| Person A baseline 1024 (best_model.pth) | 0.852 |
-| Person A baseline 1024 (post-rebase) | 0.828 |
-| Person A 512×512 ablation | **0.891** ← improves at lower res |
+|  baseline 1024 (best_model.pth) | 0.852 |
+|  baseline 1024 (post-rebase) | 0.828 |
+|  512×512 ablation | **0.891** ← improves at lower res |
 | 8 × separate 1024 (this work) | **0.582** ← collapses |
 
 Why? The bright/dark slider modulates **global mean luminance** — exactly the band that JPEG's quantisation tables are built to preserve, but also the band where natural-image dynamic range dwarfs a ±0.3-scale LoRA perturbation. The signal is *small in amplitude, low-frequency, and globally distributed* — i.e. the kind of shift that:
 
 1. is easy for a CNN with a strong inductive bias to confuse with prompt-level luminance variation,
 2. requires global pooling features (which the shared backbone provides via cross-bit feature sharing, but the per-bit separate models cannot),
-3. is the only bit where Person A's 512-resolution ablation *outperforms* 1024 by 3.9 pp — suggesting the optimal ResNet receptive field for this bit is below the native resolution.
+3. is the only bit where the 512-resolution ablation *outperforms* 1024 by 3.9 pp — suggesting the optimal ResNet receptive field for this bit is below the native resolution.
 
 **Implication for the ensemble.** With bit 3 stuck at ~58 %, the separate ensemble's exact-match cannot exceed `0.58 × 0.92 × 0.96 × … ≈ 0.40` even if every other bit were perfect. The observed 33.59 % exact-match is consistent with this ceiling.
 
@@ -168,20 +168,20 @@ The robustness eval ([§3 above](#3--robustness-evaluation-1024-native)) provide
 At first glance the 188 M-parameter separate ensemble should beat the 25 M-parameter shared backbone — more capacity, more specialised representations. It does not, primarily because:
 
 - **No cross-bit feature sharing.** Bit 3's bright/dark signal correlates with bits 4 (contrast) and 5 (saturation) — the shared backbone learns one luminance feature that helps all three; the separate models can't share.
-- **More overfitting capacity per bit.** With 25 M parameters dedicated to a single binary label and only 2048 training samples, the per-bit models have far more degrees of freedom than the data supports. The val→test gap on bit 3 (0.6367 val → 0.5820 test) is larger than the shared model's gap on the same bit (0.875 val per Person A → 0.828 test).
+- **More overfitting capacity per bit.** With 25 M parameters dedicated to a single binary label and only 2048 training samples, the per-bit models have far more degrees of freedom than the data supports. The val→test gap on bit 3 (0.6367 val → 0.5820 test) is larger than the shared model's gap on the same bit (0.875 val per  → 0.828 test).
 - **Counter-intuitive robustness win.** Separate is *more* robust to JPEG and resize. This is consistent with the per-bit overfitting hypothesis: each backbone has memorised redundant low-frequency cues for "its" bit, and those redundant cues happen to survive JPEG quantisation better than the shared backbone's tightly-coupled features.
 
 In aggregate: **the shared backbone wins on clean accuracy and exact-match; the separate ensemble wins on graceful degradation** — but neither retains usable performance under any of the spec attacks at the exact-match level.
 
 ---
 
-## 5 · Comparison to Person A's prior ablations
+## 5 · Comparison to prior ablations
 
 For continuity with the existing reports in `decoding/results/`:
 
 | Configuration | Architecture | Test mean | Test exact | Source |
 | --- | --- | --- | --- | --- |
-| ResNet-50 @ 1024 | shared, 30 epochs | 0.9404 | 0.6094 | [baseline_resnet50.md](decoding/results/baseline_resnet50.md) (Person A's `best_model.pth`) |
+| ResNet-50 @ 1024 | shared, 30 epochs | 0.9404 | 0.6094 | [baseline_resnet50.md](decoding/results/baseline_resnet50.md) (`best_model.pth`) |
 | ResNet-50 @ 1024 (rerun) | shared, 30 epochs | 0.9307 | 0.5703 | this work, `baseline_resnet50.pth` |
 | ResNet-50 @ 512 | shared, 30 epochs | 0.9390 | **0.6367** | [ablation2_resolution_512.md](decoding/results/ablation2_resolution_512.md) |
 | EfficientNet-B0 @ 1024 | shared, 30 epochs | 0.9258 | 0.5469 | [ablation1_efficientnet_b0.md](decoding/results/ablation1_efficientnet_b0.md) |
@@ -198,7 +198,7 @@ For continuity with the existing reports in `decoding/results/`:
 2. **JPEG, resize, and crop only model incidental degradation.** They are useful proxies for social-media re-uploads but do not approximate a motivated attacker. Our results (no exact-match survives any attack) suggest the encoder needs a robustness-aware retraining pass before deployment.
 3. **Single-LoRA, fixed-seed, fixed-prompt training set.** All 2560 images come from a 10-prompt cycle with a deterministic seed schedule. Out-of-distribution prompts (different aesthetic, different aspect ratio, different LoRA combinations) have not been characterised.
 4. **Independent-bit assumption.** We frame decoding as 8 independent classifications. Joint decoders (e.g. learning a code over the 256 IDs directly, or training with a structured loss that penalises near-misses) are unexplored and may close the exact-match gap.
-5. **No 8 × separate retrain at 512.** Person A's 512 ablation suggests 512 is a better resolution for this task than 1024. The 8 × separate ensemble was trained at 1024 only; whether it would beat the shared 512 baseline at the same lower resolution is an open question (and would test the separate-ensemble hypothesis more fairly).
+5. **No 8 × separate retrain at 512.** The 512 ablation suggests 512 is a better resolution for this task than 1024. The 8 × separate ensemble was trained at 1024 only; whether it would beat the shared 512 baseline at the same lower resolution is an open question (and would test the separate-ensemble hypothesis more fairly).
 6. **ViT-B/16 specifically is unfit.** Other transformer architectures (Swin, DeiT-3 with adjustable patch size, ConvNeXt) might not have the same hard input constraint and could be a fairer "transformer" entry — but were not in scope here.
 
 ---
@@ -221,4 +221,4 @@ The full pipeline is documented step-by-step in [decoding/PIPELINE.md](decoding/
 
 ## 8 · One-paragraph summary for the paper
 
-> We trained three decoder architectures against an 8-bit LoRA watermark embedded in 2560 SDXL outputs. Person A's shared-backbone ResNet-50 at native 1024 × 1024 reaches 93.07 % mean bit accuracy and 57.03 % exact match on the held-out test split, with bit 3 (bright/dark) the persistent weak link at 82.8 %. An 8 × ResNet-50 ensemble, with one independent backbone per bit, underperforms the shared model (88.28 % / 33.59 %) — the gain in capacity does not overcome the loss of cross-bit feature sharing on bit 3. ViT-B/16 fails entirely because `torchvision`'s implementation hard-asserts a fixed input size that destroys the high-frequency LoRA signal before the encoder runs; robustness eval confirms the trained ViT is literally image-blind, returning identical predictions across all attacks. Under the spec attacks (JPEG, 1024→512→1024 resize, 75 % random crop) all working architectures lose nearly all exact-match capability; the separate ensemble degrades more gracefully than the shared backbone on JPEG and resize, but neither is usable under any attack. Person A's earlier 512-resolution ablation (63.67 % exact match) remains the strongest single configuration. Adversarial purification attacks (Zhao et al., NeurIPS 2024) and joint-code decoders are out of scope and left as future work.
+> We trained three decoder architectures against an 8-bit LoRA watermark embedded in 2560 SDXL outputs. Shared-backbone ResNet-50 at native 1024 × 1024 reaches 93.07 % mean bit accuracy and 57.03 % exact match on the held-out test split, with bit 3 (bright/dark) the persistent weak link at 82.8 %. An 8 × ResNet-50 ensemble, with one independent backbone per bit, underperforms the shared model (88.28 % / 33.59 %) — the gain in capacity does not overcome the loss of cross-bit feature sharing on bit 3. ViT-B/16 fails entirely because `torchvision`'s implementation hard-asserts a fixed input size that destroys the high-frequency LoRA signal before the encoder runs; robustness eval confirms the trained ViT is literally image-blind, returning identical predictions across all attacks. Under the spec attacks (JPEG, 1024→512→1024 resize, 75 % random crop) all working architectures lose nearly all exact-match capability; the separate ensemble degrades more gracefully than the shared backbone on JPEG and resize, but neither is usable under any attack. Earlier 512-resolution ablation (63.67 % exact match) remains the strongest single configuration. Adversarial purification attacks (Zhao et al., NeurIPS 2024) and joint-code decoders are out of scope and left as future work.

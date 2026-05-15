@@ -142,4 +142,4 @@ Comparison to project goals:
 - Training logs captured in terminal output
 
 **Last updated:** April 28, 2026  
-**Author:** Person A (Data Pipeline & Baseline Model)
+
