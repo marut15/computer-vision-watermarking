@@ -1,4 +1,4 @@
-# evaluation/
+# Evaluation
 
 Everything that measures the decoder or produces artifacts for the report:
 test-set evaluation, robustness testing, diagnostic analysis experiments, and
