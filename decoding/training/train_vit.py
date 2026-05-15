@@ -1,6 +1,6 @@
 """Train a ViT-B/16 watermark decoder with 8 binary heads.
 
-Mirrors Person A's train.py for the shared-backbone ResNet-50 baseline, but
+Mirrors train.py for the shared-backbone ResNet-50 baseline, but
 swaps in ViTWatermarkDecoder and forces 224x224 input (ViT-B/16 patch grid).
 """
 from __future__ import annotations
