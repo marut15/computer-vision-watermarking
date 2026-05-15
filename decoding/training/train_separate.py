@@ -1,6 +1,6 @@
 """Train 8 independent ResNet-50 binary classifiers (one per watermark bit).
 
-Reuses Person A's WatermarkDataset, splits.json, and metric helpers. Each bit
+Reuses WatermarkDataset, splits.json, and metric helpers. Each bit
 is trained with its own optimizer, cosine LR schedule, and best-checkpoint
 selection on validation accuracy. The full ensemble is then evaluated for
 mean-bit accuracy and exact match.
