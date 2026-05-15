@@ -38,7 +38,7 @@ After this, the data is at `computer-vision-watermarking/watermark_encoding/data
 
 | ID | Architecture | File | Input | Forward returns |
 | --- | --- | --- | --- | --- |
-| A1 | Shared-backbone ResNet-50 (Person A) | [src/models/resnet.py](decoding/src/models/resnet.py) | flexible | `(batch, 8)` logits |
+| A1 | Shared-backbone ResNet-50 | [src/models/resnet.py](decoding/src/models/resnet.py) | flexible | `(batch, 8)` logits |
 | A2 | 8 × ResNet-50, separate per-bit backbones | [src/model_separate.py](decoding/src/model_separate.py) | flexible | `(batch, 8)` probs (`forward`) or logits (`forward_logits`) |
 | A3 | ViT-B/16 + 8 binary heads | [src/model_vit.py](decoding/src/model_vit.py) | **224 × 224 only** | `(batch, 8)` logits |
 
@@ -63,7 +63,7 @@ All three optimisers use the same hyperparameters (same as Person A's published 
 
 The only knob that differs across runs is the input resolution `H`.
 
-### 3.1 Shared-backbone ResNet-50 (Person A's baseline) — 1024 × 1024
+### 3.1 Shared-backbone ResNet-50 — 1024 × 1024
 
 ```bash
 python scripts/train.py --config configs/baseline_resnet50.yaml
