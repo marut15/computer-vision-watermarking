@@ -48,7 +48,7 @@ A1 and A2 train and evaluate at the dataset's **native 1024 × 1024**. A3's inpu
 
 ## 3 · Training — the three runs
 
-All three optimisers use the same hyperparameters (same as Person A's published baseline):
+All three optimisers use the same hyperparameters (same as baseline):
 
 | Hyperparameter | Value |
 | --- | --- |
@@ -57,7 +57,7 @@ All three optimisers use the same hyperparameters (same as Person A's published 
 | Learning rate | 1e-4 |
 | Schedule | Cosine annealing over `num_epochs` |
 | Batch size | 4 |
-| Epochs | 25 (separate / ViT) — 30 (Person A's baseline) |
+| Epochs | 25 (separate / ViT) — 30 (baseline) |
 | Pretrained backbone | ImageNet (`torchvision` default weights) |
 | Image transform | `Resize((H, H))` → `ToTensor` → ImageNet `Normalize` |
 
@@ -105,7 +105,7 @@ Source: [scripts/signal_analysis.py](decoding/scripts/signal_analysis.py). Opera
 | 1 | `visualize_comparison` | `comparison_prompt_{00..09}.png` | For each of the 10 prompts, an 8 × 3 grid: rows are sliders S1–S8, columns are baseline / bit=1 / bit=0. Pairs are matched on prompt + ID-with-only-this-bit-flipped so visual differences isolate that single slider. |
 | 2 | `difference_images` | `diff_slider_{0..7}.png` | For each slider, three panels per prompt: (watermarked bit=1) − baseline, (bit=0) − baseline, and (bit=1) − (bit=0), each amplified ×10 and clipped to `[0, 1]`. Surfaces where each slider deposits its perturbation in pixel space. |
 | 3 | `fft_analysis` | `fft_prompt_{00..N}.png` | Log-magnitude 2D FFT of baseline vs watermarked image, plus their difference (`seismic` colormap). Bands of energy at characteristic radii indicate the slider operates in mid- or high-frequency regions; flat differences indicate luminance shifts only. |
-| 4 | `gradcam_analysis` | `gradcam_per_bit.png` | Grad-CAM (via `torchcam`) on Person A's ResNet-50 `layer4`, one panel per bit. Shows where the trained classifier attends when predicting each bit. |
+| 4 | `gradcam_analysis` | `gradcam_per_bit.png` | Grad-CAM (via `torchcam`) on ResNet-50 `layer4`, one panel per bit. Shows where the trained classifier attends when predicting each bit. |
 
 Defaults: 10 prompts, all 8 sliders for passes 1 and 2; 1 prompt for pass 3 (FFT); strongest-activating sample per bit for pass 4. CLI flags let you narrow the prompt / slider sweep.
 
@@ -150,7 +150,7 @@ Source: [scripts/compare_architectures.py](decoding/scripts/compare_architecture
 
 | Architecture | Checkpoint |
 | --- | --- |
-| Shared ResNet-50 | `checkpoints/baseline_resnet50.pth` (or `best_model.pth` for the older Person A baseline) |
+| Shared ResNet-50 | `checkpoints/baseline_resnet50.pth` (or `best_model.pth` for the older baseline) |
 | 8 × separate ResNet-50 | `checkpoints/separate/bit_{0..7}_best.pth` |
 | ViT-B/16 | `checkpoints/vit_best.pth` |
 
