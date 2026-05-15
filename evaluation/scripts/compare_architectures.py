@@ -1,7 +1,6 @@
 """Side-by-side test-set comparison of the three decoder architectures.
 
-Loads ResNet-50 (Person A), 8x separate ResNet-50 (this person), and ViT-B/16
-(this person), evaluates each on Person A's held-out test split, writes a
+Loads ResNet-50, 8x separate ResNet-50, and ViT-B/16, evaluates each on held-out test split, writes a
 markdown comparison table, and saves a grouped-bar PNG.
 
 Architectures whose checkpoints are missing are evaluated with random weights
